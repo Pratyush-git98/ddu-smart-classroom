@@ -4,6 +4,7 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 import type { CampusLocationId } from "@/types";
 import { QueryProvider } from "./query-provider";
 import { ToastProvider } from "@/components/ui/toast";
+import { AuthProvider } from "@/features/authentication/context/auth-provider";
 
 interface CampusContextType {
   activeCampus: CampusLocationId | "ALL";
@@ -26,9 +27,11 @@ export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <QueryProvider>
       <ToastProvider>
-        <CampusContext.Provider value={{ activeCampus, setActiveCampus }}>
-          {children}
-        </CampusContext.Provider>
+        <AuthProvider>
+          <CampusContext.Provider value={{ activeCampus, setActiveCampus }}>
+            {children}
+          </CampusContext.Provider>
+        </AuthProvider>
       </ToastProvider>
     </QueryProvider>
   );

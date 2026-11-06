@@ -3,17 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { useActiveCampus } from "@/providers/app-provider";
+import { useAuth } from "@/hooks/use-auth";
+import { getNavigationForRole } from "@/features/authentication/config/navigation";
 import { DDUGU_BRAND } from "@/lib/design-tokens";
 import {
   Building2,
-  CalendarDays,
-  Clock,
-  GraduationCap,
-  LayoutGrid,
-  Radio,
-  Shield,
-  BellRing,
-  BookOpenCheck,
   Landmark,
   X,
   KeyRound,
@@ -42,88 +36,44 @@ interface AppSidebarProps {
 
 export function AppSidebar({ onClose, className }: AppSidebarProps) {
   const { activeCampus, setActiveCampus } = useActiveCampus();
+  const { user, isAuthenticated } = useAuth();
+
+  const roleNav = getNavigationForRole(isAuthenticated && user ? user.role : null);
 
   const navItems: NavGroup[] = [
-    {
-      group: "Facility Management",
-      items: [
-        {
-          label: "Classrooms & Smart Labs",
-          href: "#classrooms",
-          icon: LayoutGrid,
-          badge: "70 Total",
-        },
-        {
-          label: "Booking Requisitions",
-          href: "#bookings",
-          icon: CalendarDays,
-          badge: "4 Pending",
-        },
-        {
-          label: "Timetable & Shifts",
-          href: "#timetable",
-          icon: Clock,
-        },
-      ],
-    },
-    {
-      group: "Academic Modules",
-      items: [
-        {
-          label: "Student Schedule",
-          href: "#student",
-          icon: GraduationCap,
-        },
-        {
-          label: "Faculty Hub",
-          href: "#faculty",
-          icon: BookOpenCheck,
-        },
-        {
-          label: "Admin & Clash Matrix",
-          href: "#admin",
-          icon: Shield,
-        },
-      ],
-    },
-    {
-      group: "System & Telemetry",
-      items: [
-        {
-          label: "Notifications & Alerts",
-          href: "#notifications",
-          icon: BellRing,
-          badge: "2 Live",
-          badgeColor: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-        },
-        {
-          label: "IoT Sensor Status",
-          href: "#iot-sensors",
-          icon: Radio,
-          badge: "98% Online",
-        },
-      ],
-    },
-    {
-      group: "Institutional SSO & Access",
-      items: [
-        {
-          label: "Portal Sign In",
-          href: "/login",
-          icon: KeyRound,
-        },
-        {
-          label: "Profile Registration",
-          href: "/register",
-          icon: UserPlus,
-        },
-        {
-          label: "Clearance Governance",
-          href: "/unauthorized",
-          icon: Lock,
-        },
-      ],
-    },
+    ...roleNav.map((group) => ({
+      group: group.group,
+      items: group.items.map((item) => ({
+        label: item.label,
+        href: item.href,
+        icon: item.icon,
+        badge: item.badge,
+      })),
+    })),
+    ...(!isAuthenticated
+      ? [
+          {
+            group: "Institutional SSO & Access",
+            items: [
+              {
+                label: "Portal Sign In",
+                href: "/login",
+                icon: KeyRound,
+              },
+              {
+                label: "Profile Registration",
+                href: "/register",
+                icon: UserPlus,
+              },
+              {
+                label: "Clearance Governance",
+                href: "/unauthorized",
+                icon: Lock,
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   return (

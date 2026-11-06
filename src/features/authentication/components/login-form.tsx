@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginInput } from "@/schemas/auth";
-import { authService } from "../services/auth-service";
+import { useAuth } from "../hooks/use-auth";
+import { getDashboardPathForUser } from "../config/role-routes";
 import { DemoCredentialsBanner } from "./demo-credentials-banner";
 import type { DemoCredential } from "../types";
 import { useToast } from "@/components/ui/toast";
@@ -28,6 +29,7 @@ import {
 export function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [authSuccessUser, setAuthSuccessUser] = useState<string | null>(null);
@@ -66,7 +68,7 @@ export function LoginForm() {
   const onSubmit = async (data: LoginInput) => {
     setGeneralError(null);
     try {
-      const result = await authService.login(data);
+      const result = await login(data);
 
       if (!result.success) {
         setGeneralError(result.message);
@@ -78,18 +80,18 @@ export function LoginForm() {
         return;
       }
 
-      setAuthSuccessUser(result.user?.name ?? data.email);
+      setAuthSuccessUser(result.user?.displayName ?? data.email);
 
       toast({
         title: "Authentication Successful",
-        description: `Welcome to DDUGU Smart Campus Portal, ${result.user?.name ?? "User"}. Clearance: [${result.user?.role}]`,
+        description: `Welcome to DDUGU Smart Campus Portal, ${result.user?.displayName ?? "User"}. Clearance: [${result.user?.role}]`,
         variant: "success",
       });
 
-      // Simulated redirection notice for frontend demonstration
+      const destination = result.user ? getDashboardPathForUser(result.user) : "/";
       setTimeout(() => {
-        router.push("/");
-      }, 1500);
+        router.push(destination);
+      }, 700);
     } catch {
       setGeneralError("An unexpected error occurred while communicating with the university gateway.");
       toast({
@@ -141,7 +143,7 @@ export function LoginForm() {
           <ShieldCheck className="size-4 shrink-0 text-emerald-600 mt-0.5" />
           <div className="space-y-0.5">
             <span className="font-semibold block">Authenticated Successfully</span>
-            <span>Identity verified for {authSuccessUser}. Redirecting to campus overview...</span>
+            <span>Identity verified for {authSuccessUser}. Opening your role-specific dashboard...</span>
           </div>
         </div>
       )}

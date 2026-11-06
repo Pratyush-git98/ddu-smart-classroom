@@ -1,19 +1,8 @@
 import React from "react";
-import Link from "next/link";
 import type { Metadata } from "next";
-import { AuthLayout } from "@/features/authentication";
-import { Button } from "@/components/ui/button";
+import { AuthLayout, UnauthorizedActions } from "@/features/authentication";
 import { Badge } from "@/components/ui/badge";
-import {
-  ShieldAlert,
-  Lock,
-  ArrowLeft,
-  LogIn,
-  Building2,
-  Mail,
-  HelpCircle,
-  FileWarning,
-} from "lucide-react";
+import { ShieldAlert, Lock, HelpCircle } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "403 Clearance Required | DDUGU Smart Classroom Portal",
@@ -51,6 +40,8 @@ export default function UnauthorizedPage() {
         <p className="text-xs text-slate-600 leading-relaxed">
           The smart campus module you attempted to access requires higher administrative or faculty
           clearance. Your current profile does not possess the requisite security elevation.
+          Frontend route guards only hide the workspace; campus APIs must still authorize every
+          privileged request on the server.
         </p>
 
         {/* Access Matrix Card */}
@@ -97,22 +88,7 @@ export default function UnauthorizedPage() {
           </ul>
         </div>
 
-        {/* Action Buttons */}
-        <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
-          <Link href="/login" className="flex-1">
-            <Button className="w-full bg-blue-700 hover:bg-blue-800 text-white text-xs h-9 gap-1.5 shadow-xs">
-              <LogIn className="size-3.5" />
-              <span>Sign In with Different ID</span>
-            </Button>
-          </Link>
-
-          <Link href="/" className="flex-1">
-            <Button variant="outline" className="w-full text-xs h-9 gap-1.5 border-slate-300">
-              <ArrowLeft className="size-3.5" />
-              <span>Return to Campus Home</span>
-            </Button>
-          </Link>
-        </div>
+        <UnauthorizedActions />
       </div>
     </AuthLayout>
   );

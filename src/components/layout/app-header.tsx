@@ -1,19 +1,16 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { DDUGU_BRAND } from "@/lib/design-tokens";
 import { useActiveCampus } from "@/providers/app-provider";
 import { CampusBadge } from "@/components/common/campus-badge";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SessionUserMenu } from "@/features/authentication/components/session-user-menu";
 import {
   Bell,
   Search,
   SlidersHorizontal,
   GraduationCap,
-  ShieldCheck,
-  LogIn,
 } from "lucide-react";
 
 interface AppHeaderProps {
@@ -139,18 +136,7 @@ export function AppHeader({
           )}
         </div>
 
-        {/* Sign In & Access Actions */}
-        <div className="flex items-center gap-2 pl-1 border-l border-slate-200">
-          <Link href="/login">
-            <Button
-              size="sm"
-              className="bg-blue-700 hover:bg-blue-800 text-white text-xs h-8 px-3 gap-1.5 shadow-xs"
-            >
-              <LogIn className="size-3.5" />
-              <span>Portal Sign In</span>
-            </Button>
-          </Link>
-        </div>
+        <SessionUserMenu />
       </div>
     </header>
   );

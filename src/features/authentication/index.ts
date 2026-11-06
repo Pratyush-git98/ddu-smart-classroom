@@ -1,5 +1,7 @@
 export * from "./types";
 export * from "./services/auth-service";
+export * from "./config/role-routes";
+export * from "./hooks/use-auth";
 export * from "./components/auth-layout";
 export * from "./components/auth-card";
 export * from "./components/login-form";
@@ -10,3 +12,9 @@ export * from "./components/verify-email-form";
 export * from "./components/password-strength-indicator";
 export * from "./components/demo-credentials-banner";
 export * from "./components/admin-registration-notice";
+export * from "./components/role-guard";
+export * from "./components/guest-only";
+export * from "./components/auth-loading-screen";
+export * from "./components/session-expired-panel";
+export * from "./components/session-user-menu";
+export * from "./components/unauthorized-actions";

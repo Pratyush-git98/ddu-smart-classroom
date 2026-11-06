@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
-import { AuthLayout, LoginForm } from "@/features/authentication";
+import { AuthLayout, GuestOnly, LoginForm } from "@/features/authentication";
 import { Loader2 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -25,7 +25,9 @@ export default function LoginPage() {
       badgeText="Institutional SSO"
     >
       <Suspense fallback={<LoginLoading />}>
-        <LoginForm />
+        <GuestOnly>
+          <LoginForm />
+        </GuestOnly>
       </Suspense>
     </AuthLayout>
   );
