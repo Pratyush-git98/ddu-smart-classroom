@@ -71,3 +71,23 @@ export const CreateClassroomSchema = z.object({
 
 export type CreateClassroomInput = z.infer<typeof CreateClassroomSchema>;
 
+export const AdminClassroomFormSchema = z.object({
+  roomNumber: z.string().min(1, "Room number is required (e.g., LT-1 or CS-204)"),
+  name: z.string().min(2, "Room label or name is required"),
+  campusId: z.enum(["IET", "DEEKSHA_BHAWAN"]),
+  block: z.string().min(1, "Building or block is required"),
+  floor: z.number().int().min(0, "Floor index must be 0 (ground) or higher"),
+  capacity: z.number().int().positive("Capacity must be positive"),
+  type: z.enum([
+    "SMART_LECTURE_HALL",
+    "THEATRE_AUDITORIUM",
+    "COMPUTER_LAB",
+    "SEMINAR_HALL",
+    "TUTORIAL_ROOM",
+    "CONFERENCE_ROOM",
+  ]),
+  facilities: z.array(z.enum(["PROJECTOR", "SMART_BOARD", "COMPUTERS", "AIR_CONDITIONING"])),
+});
+
+export type AdminClassroomFormInput = z.infer<typeof AdminClassroomFormSchema>;
+

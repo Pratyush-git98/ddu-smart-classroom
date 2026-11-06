@@ -1,12 +1,12 @@
 "use client";
 
-import { AppShell } from "@/components/layout";
 import { RoleGuard } from "@/features/authentication";
+import { AdminShell } from "@/features/admin";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <RoleGuard allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
-      <AppShell>{children}</AppShell>
+      <AdminShell>{children}</AdminShell>
     </RoleGuard>
   );
 }

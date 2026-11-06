@@ -1,4 +1,14 @@
 export * from "./types";
 export * from "./components/campus-analytics-preview";
 export * from "./components/audit-feed-preview";
-
+export * from "./components/admin-shell";
+export * from "./components/admin-overview";
+export * from "./components/admin-classrooms-page";
+export * from "./components/admin-users-page";
+export * from "./components/admin-timetable-page";
+export * from "./components/admin-approvals-page";
+export * from "./components/admin-issues-page";
+export * from "./components/admin-notifications-page";
+export * from "./components/admin-audit-page";
+export * from "./components/admin-reports-page";
+export * from "./services/admin-dashboard-service";
