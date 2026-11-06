@@ -7,6 +7,7 @@ import { useFacultyBookings } from "../hooks/use-faculty-dashboard";
 import type { FacultyBooking } from "../types";
 import { BookingCard } from "./booking-card";
 import { CancelBookingDialog } from "./booking-dialogs";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { FacultyEmptyState, FacultyErrorState, FacultyLoadingState } from "./query-state";
 
 export function FacultyBookingsPage({ scope }: { scope: "active" | "history" }) {
@@ -52,6 +53,13 @@ export function FacultyBookingsPage({ scope }: { scope: "active" | "history" }) 
           </Button>
         )}
       </div>
+
+      <StaleDataHint
+        hasData={Boolean(bookings.data)}
+        isFetching={bookings.isFetching}
+        isStale={bookings.isStale}
+        dataUpdatedAt={bookings.dataUpdatedAt}
+      />
 
       {items.length === 0 ? (
         <FacultyEmptyState

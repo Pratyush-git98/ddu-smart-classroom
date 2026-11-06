@@ -2,15 +2,18 @@
 
 import { useMemo, useState } from "react";
 import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CampusBadge } from "@/components/common/campus-badge";
 import { Badge } from "@/components/ui/badge";
 import { selectClassName } from "../lib/admin-labels";
-import { useAdminTimetable } from "../hooks/use-admin-dashboard";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
+import { useAdminCommands, useAdminTimetable } from "../hooks/use-admin-dashboard";
 import { AdminEmptyState, AdminErrorState, AdminLoadingState } from "./query-state";
 
 export function AdminTimetablePage() {
   const timetable = useAdminTimetable();
+  const commands = useAdminCommands();
   const [campusId, setCampusId] = useState<"ALL" | "IET" | "DEEKSHA_BHAWAN">("ALL");
   const [day, setDay] = useState<"ALL" | string>("ALL");
 
@@ -43,6 +46,13 @@ export function AdminTimetablePage() {
         </p>
       </div>
 
+      <StaleDataHint
+        hasData={Boolean(timetable.data)}
+        isFetching={timetable.isFetching}
+        isStale={timetable.isStale}
+        dataUpdatedAt={timetable.dataUpdatedAt}
+      />
+
       <div className="flex flex-wrap items-center gap-2">
         <select className={`${selectClassName} w-44`} value={campusId} onChange={(event) => setCampusId(event.target.value as typeof campusId)}>
           <option value="ALL">All campuses</option>
@@ -58,6 +68,15 @@ export function AdminTimetablePage() {
           <option>Friday</option>
           <option>Saturday</option>
         </select>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={() => void commands.refreshTimetable.mutateAsync()}
+          disabled={commands.refreshTimetable.isPending}
+        >
+          Reload from academic service
+        </Button>
         {conflictCount > 0 && (
           <Badge variant="outline" className="border-orange-200 bg-orange-50 text-orange-800">
             <AlertTriangle className="mr-1 size-3" />

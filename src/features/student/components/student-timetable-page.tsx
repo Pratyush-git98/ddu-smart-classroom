@@ -8,6 +8,7 @@ import { useNow, useStudentTimetable } from "../hooks/use-student-dashboard";
 import { dayCounts } from "./weekly-timetable-preview";
 import { DayFilter } from "./day-filter";
 import { TimetableClassCard } from "./timetable-class-card";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "./query-state";
 import { MOCK_DATA_DISCLAIMER } from "../services/mock/mock-student-dashboard";
 
@@ -58,6 +59,13 @@ export function StudentTimetablePage() {
         </p>
         <p className="mt-1 text-[11px] text-slate-400">{MOCK_DATA_DISCLAIMER}</p>
       </div>
+
+      <StaleDataHint
+        hasData={Boolean(timetable.data)}
+        isFetching={timetable.isFetching}
+        isStale={timetable.isStale}
+        dataUpdatedAt={timetable.dataUpdatedAt}
+      />
 
       <DayFilter value={day} onChange={setDay} counts={counts} />
 

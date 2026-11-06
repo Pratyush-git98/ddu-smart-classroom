@@ -2,10 +2,13 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
+import { invalidateNotificationViews } from "@/lib/invalidate-queries";
+import { QUERY_CACHE } from "@/lib/query-cache-policy";
+import { queryKeys } from "@/lib/query-keys";
 import type { NotificationQuery, UserRole } from "@/types";
 import { getNotificationService } from "../services/notification-client";
 
-export const NOTIFICATION_QUERY_KEY = ["notifications"] as const;
+export const NOTIFICATION_QUERY_KEY = queryKeys.notifications.all;
 
 function inboxRole(role: UserRole | undefined): UserRole | undefined {
   if (!role) return undefined;
@@ -25,9 +28,11 @@ export function useNotifications(filters?: Pick<NotificationQuery, "category" | 
   const query: NotificationQuery = { ...inbox, ...filters };
 
   return useQuery({
-    queryKey: [...NOTIFICATION_QUERY_KEY, "list", query],
+    queryKey: queryKeys.notifications.list(query),
     queryFn: () => getNotificationService().list(query),
     enabled: Boolean(inbox.role && inbox.recipientId),
+    staleTime: QUERY_CACHE.notifications.staleTimeMs,
+    gcTime: QUERY_CACHE.notifications.gcTimeMs,
   });
 }
 
@@ -35,9 +40,11 @@ export function useUnreadNotificationCount() {
   const inbox = useNotificationInboxQuery();
 
   return useQuery({
-    queryKey: [...NOTIFICATION_QUERY_KEY, "unread", inbox],
+    queryKey: queryKeys.notifications.unread(inbox),
     queryFn: () => getNotificationService().getUnreadCount(inbox),
     enabled: Boolean(inbox.role && inbox.recipientId),
+    staleTime: QUERY_CACHE.notifications.staleTimeMs,
+    gcTime: QUERY_CACHE.notifications.gcTimeMs,
   });
 }
 
@@ -45,17 +52,13 @@ export function useNotificationPreferences() {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: [...NOTIFICATION_QUERY_KEY, "preferences", user?.id],
+    queryKey: queryKeys.notifications.preferences(user?.id),
     queryFn: () => getNotificationService().getDeliveryPreferences(user!.id),
     enabled: Boolean(user?.id),
+    staleTime: QUERY_CACHE.profiles.staleTimeMs,
+    gcTime: QUERY_CACHE.profiles.gcTimeMs,
+    refetchOnWindowFocus: false,
   });
-}
-
-function invalidateNotificationViews(queryClient: ReturnType<typeof useQueryClient>) {
-  void queryClient.invalidateQueries({ queryKey: NOTIFICATION_QUERY_KEY });
-  void queryClient.invalidateQueries({ queryKey: ["student-dashboard"] });
-  void queryClient.invalidateQueries({ queryKey: ["faculty-dashboard"] });
-  void queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
 }
 
 export function useNotificationCommands() {

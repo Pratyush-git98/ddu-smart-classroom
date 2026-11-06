@@ -3,6 +3,8 @@ import { academicBookingService } from "@/features/bookings/services/mock/mock-b
 import { actorFromRequest } from "@/features/bookings/services/parse-actor";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
   const actor = actorFromRequest(request);

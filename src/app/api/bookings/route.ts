@@ -4,6 +4,8 @@ import { actorFromRequest } from "@/features/bookings/services/parse-actor";
 import type { FacultyBookingDraft } from "@/features/faculty/types";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(request: Request) {
   const actor = actorFromRequest(request);

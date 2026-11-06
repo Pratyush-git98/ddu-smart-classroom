@@ -1,9 +1,12 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { getBookingService } from "@/features/bookings/services/booking-client";
 import type { BookingActor } from "@/features/bookings/services/booking-service.interface";
+import { invalidateAfterBookingMutation } from "@/lib/invalidate-queries";
+import { QUERY_CACHE } from "@/lib/query-cache-policy";
+import { queryKeys } from "@/lib/query-keys";
 import { facultyDashboardService } from "../services/faculty-dashboard-service";
 import type { FacultyBookingDraft } from "../types";
 
@@ -16,54 +19,67 @@ function useBookingActor(): BookingActor | null {
 export function useFacultyOverview() {
   const actor = useBookingActor();
   return useQuery({
-    queryKey: ["faculty-dashboard", "overview", actor?.id],
+    queryKey: [...queryKeys.dashboards.faculty, "overview", actor?.id],
     queryFn: () => facultyDashboardService.getOverview(actor!),
     enabled: Boolean(actor),
   });
 }
 
 export function useFacultySchedule() {
+  const actor = useBookingActor();
   return useQuery({
-    queryKey: ["faculty-dashboard", "schedule"],
+    queryKey: queryKeys.timetable.faculty(actor?.id),
     queryFn: () => facultyDashboardService.getWeeklySchedule(),
+    staleTime: QUERY_CACHE.timetable.staleTimeMs,
+    gcTime: QUERY_CACHE.timetable.gcTimeMs,
+    enabled: Boolean(actor),
   });
 }
 
 export function useFacultyBookings(scope: "active" | "history") {
   const actor = useBookingActor();
   return useQuery({
-    queryKey: ["faculty-dashboard", "bookings", scope, actor?.id],
+    queryKey: queryKeys.bookings.list(scope, actor?.id),
     queryFn: () => facultyDashboardService.getBookings(scope, actor!),
     enabled: Boolean(actor),
+    staleTime: QUERY_CACHE.bookings.staleTimeMs,
+    gcTime: QUERY_CACHE.bookings.gcTimeMs,
   });
 }
 
 export function useFacultyBooking(id: string | undefined) {
   const actor = useBookingActor();
   return useQuery({
-    queryKey: ["faculty-dashboard", "booking", id, actor?.id],
+    queryKey: queryKeys.bookings.detail(id ?? "", actor?.id),
     queryFn: () => getBookingService().getBookingById(id!, actor!),
     enabled: Boolean(actor && id),
+    staleTime: QUERY_CACHE.bookings.staleTimeMs,
+    gcTime: QUERY_CACHE.bookings.gcTimeMs,
   });
 }
 
 export function useFacultyClassroomSearch(query: string) {
+  const normalized = query.trim().toLowerCase();
   return useQuery({
-    queryKey: ["faculty-dashboard", "classrooms", query.trim().toLowerCase()],
+    queryKey: queryKeys.classrooms.locator("faculty", normalized),
     queryFn: () => facultyDashboardService.searchClassrooms(query),
+    staleTime: QUERY_CACHE.classroomMetadata.staleTimeMs,
+    gcTime: QUERY_CACHE.classroomMetadata.gcTimeMs,
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false,
   });
 }
 
 export function useFacultyProfile() {
+  const actor = useBookingActor();
   return useQuery({
-    queryKey: ["faculty-dashboard", "profile"],
+    queryKey: queryKeys.profiles.faculty(actor?.id),
     queryFn: () => facultyDashboardService.getProfile(),
+    staleTime: QUERY_CACHE.profiles.staleTimeMs,
+    gcTime: QUERY_CACHE.profiles.gcTimeMs,
+    enabled: Boolean(actor),
+    refetchOnWindowFocus: false,
   });
-}
-
-function invalidateBookings(queryClient: ReturnType<typeof useQueryClient>) {
-  void queryClient.invalidateQueries({ queryKey: ["faculty-dashboard"] });
-  void queryClient.invalidateQueries({ queryKey: ["classrooms"] });
 }
 
 export function useFacultyBookingCommands() {
@@ -75,7 +91,12 @@ export function useFacultyBookingCommands() {
       if (!actor) return Promise.reject(new Error("Sign in is required."));
       return getBookingService().createBooking(draft, actor);
     },
-    onSuccess: () => invalidateBookings(queryClient),
+    retry: 0,
+    onSuccess: async (result) => {
+      if (result.success) {
+        await invalidateAfterBookingMutation(queryClient);
+      }
+    },
   });
 
   const update = useMutation({
@@ -83,7 +104,12 @@ export function useFacultyBookingCommands() {
       if (!actor) return Promise.reject(new Error("Sign in is required."));
       return getBookingService().updateBooking(id, draft, actor);
     },
-    onSuccess: () => invalidateBookings(queryClient),
+    retry: 0,
+    onSuccess: async (result) => {
+      if (result.success) {
+        await invalidateAfterBookingMutation(queryClient);
+      }
+    },
   });
 
   const cancel = useMutation({
@@ -91,7 +117,12 @@ export function useFacultyBookingCommands() {
       if (!actor) return Promise.reject(new Error("Sign in is required."));
       return getBookingService().cancelBooking(id, actor);
     },
-    onSuccess: () => invalidateBookings(queryClient),
+    retry: 0,
+    onSuccess: async (result) => {
+      if (result.success) {
+        await invalidateAfterBookingMutation(queryClient);
+      }
+    },
   });
 
   return { submit, update, cancel, actor };

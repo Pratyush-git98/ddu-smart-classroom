@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Bell, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/common";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { useAuth } from "@/hooks/use-auth";
 import { WEB_PUSH_UNSUPPORTED_MESSAGE } from "../services/channels/web-push-channel";
 import { NotificationFilters, type NotificationFilterState } from "./notification-filters";
@@ -97,6 +98,13 @@ export function NotificationCenterPage({
           Mark all as read
         </Button>
       </div>
+
+      <StaleDataHint
+        hasData={Boolean(notices.data)}
+        isFetching={notices.isFetching}
+        isStale={notices.isStale}
+        dataUpdatedAt={notices.dataUpdatedAt}
+      />
 
       <NotificationFilters value={filters} onChange={setFilters} />
 

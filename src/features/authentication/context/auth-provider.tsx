@@ -10,6 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { AuthSessionStatus, User, UserRole } from "@/types";
 import type { LoginInput } from "@/schemas/auth";
 import { getAuthService } from "../services/auth-client";
@@ -41,6 +42,7 @@ function snapshotToStatus(snapshot: AuthSessionSnapshot): AuthSessionStatus {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState<AuthSessionStatus>("loading");
   const [issuedAt, setIssuedAt] = useState<string | null>(null);
@@ -109,8 +111,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     await getAuthService().logout();
+    queryClient.clear();
     applySnapshot({ user: null, issuedAt: null, expiresAt: null, isExpired: false }, "unauthenticated");
-  }, [applySnapshot]);
+  }, [applySnapshot, queryClient]);
 
   const refreshSession = useCallback(async () => {
     if (refreshLock.current) return status === "authenticated";

@@ -9,3 +9,4 @@ export * from "./components/availability-timeline";
 export * from "./components/classroom-details-drawer";
 export * from "./services/classroom-service.interface";
 export * from "./services/classroom-client";
+export * from "./hooks/use-classroom-search";

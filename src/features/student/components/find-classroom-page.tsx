@@ -8,6 +8,7 @@ import { CampusBadge } from "@/components/common/campus-badge";
 import { RoomStatusBadge } from "@/components/common/status-badge";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useStudentClassroomSearch } from "../hooks/use-student-dashboard";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "./query-state";
 
 export function FindClassroomPage() {
@@ -37,7 +38,14 @@ export function FindClassroomPage() {
         />
       </div>
 
-      {search.isPending && <DashboardLoadingState label="Searching facility catalog..." />}
+      <StaleDataHint
+        hasData={Boolean(search.data)}
+        isFetching={search.isFetching}
+        isStale={search.isStale}
+        dataUpdatedAt={search.dataUpdatedAt}
+      />
+
+      {search.isPending && !search.data && <DashboardLoadingState label="Searching facility catalog..." />}
 
       {search.isError && (
         <DashboardErrorState

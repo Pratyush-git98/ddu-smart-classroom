@@ -6,6 +6,7 @@ import { useFacultySchedule } from "../hooks/use-faculty-dashboard";
 import { ACADEMIC_DAYS, getAcademicDayOfWeek } from "../lib/faculty-time";
 import { MOCK_FACULTY_DISCLAIMER } from "../services/mock/mock-faculty-dashboard";
 import { LectureCard } from "./lecture-card";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { FacultyEmptyState, FacultyErrorState, FacultyLoadingState } from "./query-state";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +44,13 @@ export function FacultySchedulePage() {
         </p>
         <p className="mt-1 text-[11px] text-slate-400">{MOCK_FACULTY_DISCLAIMER}</p>
       </div>
+
+      <StaleDataHint
+        hasData={Boolean(schedule.data)}
+        isFetching={schedule.isFetching}
+        isStale={schedule.isStale}
+        dataUpdatedAt={schedule.dataUpdatedAt}
+      />
 
       <div className="-mx-1 flex gap-1.5 overflow-x-auto pb-1" role="tablist" aria-label="Filter schedule by day">
         {(["ALL", ...ACADEMIC_DAYS] as const).map((item) => {

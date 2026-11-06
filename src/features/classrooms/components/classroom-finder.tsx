@@ -6,6 +6,7 @@ import type { Classroom, ClassroomSearchFilters, ClassroomSearchMatch, RoomAvail
 import { useClassroomBuildings, useClassroomSearch, useConfirmClassroomAvailability } from "../hooks/use-classroom-search";
 import { createDefaultClassroomSearchFilters } from "../lib/default-filters";
 import { ClassroomDetailsDrawer } from "./classroom-details-drawer";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { ClassroomSearchEmpty, ClassroomSearchError, ClassroomSearchLoading } from "./classroom-finder-states";
 import { ClassroomResultCard } from "./classroom-result-card";
 import { ClassroomSearchFiltersForm } from "./classroom-search-filters";
@@ -104,7 +105,6 @@ export function ClassroomFinder({
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
             <p>
               <strong className="text-slate-800">{results.length}</strong> rooms in catalog
-              {search.isFetching ? " · refreshing…" : ""}
             </p>
             <p>
               Availability mode:{" "}
@@ -115,6 +115,12 @@ export function ClassroomFinder({
               </span>
             </p>
           </div>
+          <StaleDataHint
+            hasData={Boolean(search.data)}
+            isFetching={search.isFetching}
+            isStale={search.isStale}
+            dataUpdatedAt={search.dataUpdatedAt}
+          />
           <ul className="grid gap-4 lg:grid-cols-2">
             {results.map((match) => (
               <li key={match.classroom.id}>

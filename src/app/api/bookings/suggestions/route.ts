@@ -4,6 +4,8 @@ import { actorFromRequest } from "@/features/bookings/services/parse-actor";
 import type { AlternativeSuggestionQuery } from "@/features/bookings/services/booking-service.interface";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function POST(request: Request) {
   const actor = actorFromRequest(request);

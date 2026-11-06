@@ -3,6 +3,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { isFacultyUser } from "@/types";
 import { useFacultyProfile } from "../hooks/use-faculty-dashboard";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { FacultyErrorState, FacultyLoadingState } from "./query-state";
 
 export function FacultyProfilePage() {
@@ -46,6 +47,12 @@ export function FacultyProfilePage() {
           HR / academic information system.
         </p>
       </div>
+      <StaleDataHint
+        hasData={Boolean(profileQuery.data || authProfile)}
+        isFetching={profileQuery.isFetching}
+        isStale={profileQuery.isStale}
+        dataUpdatedAt={profileQuery.dataUpdatedAt}
+      />
       <dl className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
         {rows.map((row) => (
           <div

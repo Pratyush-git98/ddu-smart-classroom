@@ -4,6 +4,7 @@ import type {
   FacultyBookingCommandResult,
   FacultyBookingDraft,
 } from "@/features/faculty/types";
+import { campusFetch, parseJson } from "@/lib/campus-fetch";
 import type {
   AcademicBookingService,
   AlternativeSuggestionQuery,
@@ -20,18 +21,11 @@ function actorHeaders(actor: BookingActor): HeadersInit {
   };
 }
 
-async function parseJson<T>(response: Response): Promise<T> {
-  try {
-    return (await response.json()) as T;
-  } catch {
-    throw new Error("The booking service returned an unreadable response.");
-  }
-}
-
 class HttpAcademicBookingService implements AcademicBookingService {
   async createBooking(draft: FacultyBookingDraft, actor: BookingActor): Promise<FacultyBookingCommandResult> {
-    const response = await fetch("/api/bookings", {
+    const response = await campusFetch("/api/bookings", {
       method: "POST",
+      cachePolicy: "noStore",
       headers: actorHeaders(actor),
       body: JSON.stringify(draft),
     });
@@ -43,8 +37,9 @@ class HttpAcademicBookingService implements AcademicBookingService {
     draft: FacultyBookingDraft,
     actor: BookingActor
   ): Promise<FacultyBookingCommandResult> {
-    const response = await fetch(`/api/bookings/${id}`, {
+    const response = await campusFetch(`/api/bookings/${id}`, {
       method: "PATCH",
+      cachePolicy: "noStore",
       headers: actorHeaders(actor),
       body: JSON.stringify(draft),
     });
@@ -52,15 +47,17 @@ class HttpAcademicBookingService implements AcademicBookingService {
   }
 
   async cancelBooking(id: string, actor: BookingActor): Promise<FacultyBookingCommandResult> {
-    const response = await fetch(`/api/bookings/${id}/cancel`, {
+    const response = await campusFetch(`/api/bookings/${id}/cancel`, {
       method: "POST",
+      cachePolicy: "noStore",
       headers: actorHeaders(actor),
     });
     return parseJson<FacultyBookingCommandResult>(response);
   }
 
   async getBookingById(id: string, actor: BookingActor): Promise<BookingLookupResult> {
-    const response = await fetch(`/api/bookings/${id}`, {
+    const response = await campusFetch(`/api/bookings/${id}`, {
+      cachePolicy: "noStore",
       headers: actorHeaders(actor),
     });
     const payload = await parseJson<BookingLookupResult & { booking?: FacultyBooking | null }>(response);
@@ -86,7 +83,8 @@ class HttpAcademicBookingService implements AcademicBookingService {
   }
 
   async listBookings(scope: "active" | "history" | "all", actor: BookingActor): Promise<FacultyBooking[]> {
-    const response = await fetch(`/api/bookings?scope=${scope}`, {
+    const response = await campusFetch(`/api/bookings?scope=${scope}`, {
+      cachePolicy: "noStore",
       headers: actorHeaders(actor),
     });
     const payload = await parseJson<{ data?: FacultyBooking[]; message?: string }>(response);
@@ -100,8 +98,9 @@ class HttpAcademicBookingService implements AcademicBookingService {
     query: AlternativeSuggestionQuery,
     actor: BookingActor
   ): Promise<AlternativeClassroomSuggestion[]> {
-    const response = await fetch("/api/bookings/suggestions", {
+    const response = await campusFetch("/api/bookings/suggestions", {
       method: "POST",
+      cachePolicy: "noStore",
       headers: actorHeaders(actor),
       body: JSON.stringify(query),
     });

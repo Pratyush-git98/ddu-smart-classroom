@@ -3,6 +3,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { isStudentUser } from "@/types";
 import { useStudentAcademicContext } from "../hooks/use-student-dashboard";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { DashboardErrorState, DashboardLoadingState } from "./query-state";
 
 export function StudentProfilePage() {
@@ -47,6 +48,12 @@ export function StudentProfilePage() {
           university student information system.
         </p>
       </div>
+      <StaleDataHint
+        hasData={Boolean(academicQuery.data || profile)}
+        isFetching={academicQuery.isFetching}
+        isStale={academicQuery.isStale}
+        dataUpdatedAt={academicQuery.dataUpdatedAt}
+      />
       <dl className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
         {rows.map((row) => (
           <div

@@ -10,6 +10,7 @@ import { RoomStatusBadge } from "@/components/common/status-badge";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useFacultyClassroomSearch } from "../hooks/use-faculty-dashboard";
 import { formatFloor } from "../lib/faculty-time";
+import { StaleDataHint } from "@/components/query/stale-data-hint";
 import { FacultyEmptyState, FacultyErrorState, FacultyLoadingState } from "./query-state";
 
 export function FacultyFindClassroomPage() {
@@ -38,7 +39,13 @@ export function FacultyFindClassroomPage() {
         />
       </div>
 
-      {search.isPending && <FacultyLoadingState label="Searching facility catalog..." />}
+      <StaleDataHint
+        hasData={Boolean(search.data)}
+        isFetching={search.isFetching}
+        isStale={search.isStale}
+        dataUpdatedAt={search.dataUpdatedAt}
+      />
+      {search.isPending && !search.data && <FacultyLoadingState label="Searching facility catalog..." />}
       {search.isError && (
         <FacultyErrorState message="Classroom catalog could not be loaded." onRetry={() => void search.refetch()} />
       )}

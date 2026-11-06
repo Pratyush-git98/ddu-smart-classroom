@@ -1,35 +1,55 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { DayOfWeek } from "@/types";
+import { useAuth } from "@/hooks/use-auth";
+import { QUERY_CACHE } from "@/lib/query-cache-policy";
+import { queryKeys } from "@/lib/query-keys";
 import { studentDashboardService } from "../services/student-dashboard-service";
 
 export function useStudentOverview() {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ["student-dashboard", "overview"],
+    queryKey: [...queryKeys.dashboards.student, "overview", user?.id],
     queryFn: () => studentDashboardService.getOverview(),
+    enabled: Boolean(user),
   });
 }
 
-export function useStudentTimetable(day: DayOfWeek | "ALL") {
+export function useStudentTimetable(day: DayOfWeek | "ALL" = "ALL") {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ["student-dashboard", "timetable", day],
-    queryFn: () => studentDashboardService.getWeeklyTimetable(day),
+    queryKey: queryKeys.timetable.student(user?.id),
+    queryFn: () => studentDashboardService.getWeeklyTimetable("ALL"),
+    select: (sessions) => (day === "ALL" ? sessions : sessions.filter((item) => item.dayOfWeek === day)),
+    staleTime: QUERY_CACHE.timetable.staleTimeMs,
+    gcTime: QUERY_CACHE.timetable.gcTimeMs,
+    enabled: Boolean(user),
   });
 }
 
 export function useStudentClassroomSearch(query: string) {
+  const normalized = query.trim().toLowerCase();
   return useQuery({
-    queryKey: ["student-dashboard", "classrooms", query.trim().toLowerCase()],
+    queryKey: queryKeys.classrooms.locator("student", normalized),
     queryFn: () => studentDashboardService.searchClassrooms(query),
+    staleTime: QUERY_CACHE.classroomMetadata.staleTimeMs,
+    gcTime: QUERY_CACHE.classroomMetadata.gcTimeMs,
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false,
   });
 }
 
 export function useStudentAcademicContext() {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ["student-dashboard", "academic"],
+    queryKey: queryKeys.profiles.student(user?.id),
     queryFn: () => studentDashboardService.getAcademicContext(),
+    staleTime: QUERY_CACHE.profiles.staleTimeMs,
+    gcTime: QUERY_CACHE.profiles.gcTimeMs,
+    enabled: Boolean(user),
+    refetchOnWindowFocus: false,
   });
 }
 
