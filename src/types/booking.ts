@@ -1,6 +1,12 @@
 import type { CampusLocationId } from "./campus";
 
-export type BookingStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED" | "COMPLETED";
+export type BookingStatus =
+  | "PENDING"
+  | "APPROVED"
+  | "REJECTED"
+  | "CANCELLED"
+  | "COMPLETED"
+  | "CONFLICT_DETECTED";
 
 export type BookingPurpose =
   | "REGULAR_CLASS"

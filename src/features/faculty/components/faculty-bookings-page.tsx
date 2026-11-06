@@ -1,19 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useFacultyBookings } from "../hooks/use-faculty-dashboard";
 import type { FacultyBooking } from "../types";
 import { BookingCard } from "./booking-card";
-import { BookingDetailDialog, BookingFormDialog, CancelBookingDialog } from "./booking-dialogs";
+import { CancelBookingDialog } from "./booking-dialogs";
 import { FacultyEmptyState, FacultyErrorState, FacultyLoadingState } from "./query-state";
 
 export function FacultyBookingsPage({ scope }: { scope: "active" | "history" }) {
+  const router = useRouter();
   const bookings = useFacultyBookings(scope);
-  const [viewBooking, setViewBooking] = useState<FacultyBooking | null>(null);
-  const [editBooking, setEditBooking] = useState<FacultyBooking | null>(null);
   const [cancelBooking, setCancelBooking] = useState<FacultyBooking | null>(null);
-  const [createOpen, setCreateOpen] = useState(false);
 
   if (bookings.isPending) {
     return <FacultyLoadingState label="Loading requisitions..." />;
@@ -21,7 +20,7 @@ export function FacultyBookingsPage({ scope }: { scope: "active" | "history" }) 
   if (bookings.isError) {
     return (
       <FacultyErrorState
-        message="Booking records could not be loaded from the faculty service."
+        message="Booking records could not be loaded from the academic booking service."
         onRetry={() => void bookings.refetch()}
       />
     );
@@ -39,17 +38,17 @@ export function FacultyBookingsPage({ scope }: { scope: "active" | "history" }) 
           </h2>
           <p className="mt-1 text-sm text-slate-600">
             {isHistory
-              ? "Rejected, cancelled and completed requisitions. Status is recorded by the academic booking service."
-              : "Pending and approved requisitions. Edit is limited to pending future slots; cancellation is queued for backend release."}
+              ? "Rejected, cancelled and completed requisitions recorded by the booking service."
+              : "Pending, approved and conflicted requisitions. Edit and cancel are limited to bookings you own."}
           </p>
         </div>
         {!isHistory && (
           <Button
             type="button"
             className="bg-indigo-700 text-white hover:bg-indigo-800"
-            onClick={() => setCreateOpen(true)}
+            onClick={() => router.push("/faculty/bookings/new")}
           >
-            New requisition
+            New booking
           </Button>
         )}
       </div>
@@ -60,7 +59,18 @@ export function FacultyBookingsPage({ scope }: { scope: "active" | "history" }) 
           description={
             isHistory
               ? "Completed, rejected or cancelled requests will appear here."
-              : "Queue a classroom requisition. Clash detection will run on the booking API."
+              : "Create a classroom booking. Availability is confirmed only after the booking API responds."
+          }
+          action={
+            !isHistory ? (
+              <Button
+                type="button"
+                className="bg-indigo-700 text-white hover:bg-indigo-800"
+                onClick={() => router.push("/faculty/bookings/new")}
+              >
+                New booking
+              </Button>
+            ) : undefined
           }
         />
       ) : (
@@ -69,29 +79,12 @@ export function FacultyBookingsPage({ scope }: { scope: "active" | "history" }) 
             <BookingCard
               key={booking.id}
               booking={booking}
-              onView={setViewBooking}
-              onEdit={isHistory ? undefined : setEditBooking}
               onCancel={isHistory ? undefined : setCancelBooking}
             />
           ))}
         </div>
       )}
 
-      <BookingDetailDialog
-        booking={viewBooking}
-        open={Boolean(viewBooking)}
-        onOpenChange={(open) => !open && setViewBooking(null)}
-      />
-      <BookingFormDialog
-        open={createOpen || Boolean(editBooking)}
-        booking={editBooking}
-        onOpenChange={(open) => {
-          if (!open) {
-            setCreateOpen(false);
-            setEditBooking(null);
-          }
-        }}
-      />
       <CancelBookingDialog
         booking={cancelBooking}
         open={Boolean(cancelBooking)}

@@ -49,7 +49,10 @@ export function isFutureSlot(date: string, startTime: string, now = new Date()):
 }
 
 export function canEditBooking(booking: FacultyBooking, now = new Date()): boolean {
-  return booking.status === "PENDING" && isFutureSlot(booking.date, booking.startTime, now);
+  return (
+    (booking.status === "PENDING" || booking.status === "CONFLICT_DETECTED") &&
+    isFutureSlot(booking.date, booking.startTime, now)
+  );
 }
 
 export function canCancelBooking(booking: FacultyBooking, now = new Date()): boolean {

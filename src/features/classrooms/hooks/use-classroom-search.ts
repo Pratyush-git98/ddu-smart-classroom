@@ -16,6 +16,14 @@ export function useClassroomSearch(filters: ClassroomSearchFilters) {
   });
 }
 
+export function useClassroomCatalog() {
+  return useQuery({
+    queryKey: ["classrooms", "catalog"],
+    queryFn: () => classroomService.listCatalog(),
+    staleTime: 60_000,
+  });
+}
+
 export function useClassroomBuildings(campusId: ClassroomSearchFilters["campusId"]) {
   return useQuery({
     queryKey: ["classrooms", "buildings", campusId],

@@ -2,25 +2,28 @@
 
 import { format, parseISO } from "date-fns";
 import { MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { BookingStatusBadge } from "@/components/common/status-badge";
 import { CampusBadge } from "@/components/common/campus-badge";
+import { useAuth } from "@/hooks/use-auth";
+import { canCancelOwnedBooking, canEditOwnedBooking, ownsBooking } from "@/features/bookings/lib/booking-access";
+import { purposeLabel } from "@/features/bookings/lib/booking-labels";
 import type { FacultyBooking } from "../types";
-import { canCancelBooking, canEditBooking, formatFloor, formatTimeRange } from "../lib/faculty-time";
+import { formatFloor, formatTimeRange } from "../lib/faculty-time";
 
 export function BookingCard({
   booking,
-  onView,
-  onEdit,
   onCancel,
 }: {
   booking: FacultyBooking;
-  onView: (booking: FacultyBooking) => void;
-  onEdit?: (booking: FacultyBooking) => void;
   onCancel?: (booking: FacultyBooking) => void;
 }) {
-  const editable = canEditBooking(booking);
-  const cancellable = canCancelBooking(booking);
+  const router = useRouter();
+  const { user } = useAuth();
+  const editable = canEditOwnedBooking(booking, user?.id, user?.role);
+  const cancellable = canCancelOwnedBooking(booking, user?.id, user?.role);
+  const owned = ownsBooking(booking, user?.id);
 
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
@@ -31,7 +34,7 @@ export function BookingCard({
           </p>
           <h3 className="mt-1 text-sm font-semibold text-slate-900">{booking.title}</h3>
           <p className="mt-0.5 text-[11px] uppercase tracking-wide text-slate-400">
-            {booking.purpose.replace(/_/g, " ")}
+            {purposeLabel(booking.purpose)} · {booking.attendeesCount} students
           </p>
         </div>
         <BookingStatusBadge status={booking.status} />
@@ -46,16 +49,33 @@ export function BookingCard({
           </span>
         </span>
       </p>
-      <div className="mt-2">
+      <div className="mt-2 flex flex-wrap items-center gap-2">
         <CampusBadge campusId={booking.venue.campusId} size="sm" />
+        {!owned && (
+          <span className="text-[11px] font-medium text-slate-500">Owned by {booking.facultyName}</span>
+        )}
       </div>
 
+      {booking.status === "CONFLICT_DETECTED" && booking.conflictMessage && (
+        <p className="mt-2 text-xs text-orange-800">{booking.conflictMessage}</p>
+      )}
+
       <div className="mt-4 flex flex-wrap gap-2">
-        <Button type="button" size="sm" variant="outline" onClick={() => onView(booking)}>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={() => router.push(`/faculty/bookings/${booking.id}`)}
+        >
           View
         </Button>
-        {editable && onEdit && (
-          <Button type="button" size="sm" variant="outline" onClick={() => onEdit(booking)}>
+        {editable && (
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => router.push(`/faculty/bookings/${booking.id}/edit`)}
+          >
             Edit
           </Button>
         )}

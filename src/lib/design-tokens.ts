@@ -89,6 +89,10 @@ export const BOOKING_STATUS_CONFIG = {
     label: "Completed",
     badgeClass: "bg-blue-50 text-blue-700 border-blue-200",
   },
+  CONFLICT_DETECTED: {
+    label: "Conflict detected",
+    badgeClass: "bg-orange-50 text-orange-800 border-orange-200",
+  },
 } as const;
 
 export const USER_ROLES = {

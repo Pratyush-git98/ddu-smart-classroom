@@ -27,7 +27,10 @@ export const FACULTY_NAV: FacultyNavItem[] = [
 
 export function isFacultyNavActive(pathname: string, href: string): boolean {
   if (href === "/faculty/bookings") {
-    return pathname === "/faculty/bookings";
+    return (
+      pathname === "/faculty/bookings" ||
+      (pathname.startsWith("/faculty/bookings/") && !pathname.startsWith("/faculty/bookings/history"))
+    );
   }
   if (href === "/faculty/classrooms") {
     return pathname === href || pathname.startsWith("/faculty/find-classroom");

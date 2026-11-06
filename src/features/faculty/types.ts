@@ -27,6 +27,7 @@ export interface FacultyLecture {
 export interface FacultyBooking {
   id: string;
   facultyId: string;
+  facultyName: string;
   title: string;
   purpose: BookingPurpose;
   status: BookingStatus;
@@ -38,6 +39,7 @@ export interface FacultyBooking {
   classroomId: string;
   description?: string;
   adminRemark?: string;
+  conflictMessage?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -48,8 +50,9 @@ export interface FacultyBooking {
  */
 export interface FacultyBookingDraft {
   classroomId: string;
-  roomNumber: string;
-  campusId: CampusLocationId;
+  building: string;
+  roomNumber?: string;
+  campusId?: CampusLocationId;
   title: string;
   purpose: BookingPurpose;
   date: string;
@@ -57,14 +60,28 @@ export interface FacultyBookingDraft {
   endTime: string;
   attendeesCount: number;
   description?: string;
-  requiresRecording?: boolean;
+}
+
+export interface AlternativeClassroomSuggestion {
+  classroomId: string;
+  roomNumber: string;
+  name: string;
+  building: string;
+  floor: number;
+  campusId: CampusLocationId;
+  capacity: number;
+  facilities: string[];
+  reason: string;
 }
 
 export interface FacultyBookingCommandResult {
   success: boolean;
   booking?: FacultyBooking;
+  conflict: boolean;
   pendingBackendValidation: boolean;
   message: string;
+  alternatives: AlternativeClassroomSuggestion[];
+  availabilityCheckedAt?: string;
 }
 
 export interface FacultyNotificationItem {

@@ -5,32 +5,32 @@ export const MOCK_FACULTY_DISCLAIMER =
 
 const CR101: FacultyVenue = {
   roomCode: "CR-101",
-  displayName: "Sample Lecture Hall A",
-  building: "IET Block A (CSE & IT Wing)",
+  displayName: "CSE Smart Lecture Hall",
+  building: "Block A (CSE & IT)",
   floor: 1,
   campusId: "IET",
 };
 
 const CR102: FacultyVenue = {
   roomCode: "CR-102",
-  displayName: "Sample Computing Lab",
-  building: "IET Block A (CSE & IT Wing)",
+  displayName: "Advanced AI & Cloud Lab",
+  building: "Block A (CSE & IT)",
   floor: 1,
   campusId: "IET",
 };
 
 const SH1: FacultyVenue = {
   roomCode: "IET-SH1",
-  displayName: "Sample Seminar Hall",
-  building: "IET Central Academic Wing",
-  floor: 1,
+  displayName: "IET Main Seminar Hall",
+  building: "Central Administration Wing",
+  floor: 0,
   campusId: "IET",
 };
 
 const EC201: FacultyVenue = {
   roomCode: "EC-201",
-  displayName: "Sample Shared Lecture Room",
-  building: "IET Block B (ECE & EE Wing)",
+  displayName: "Signal Processing Smart Room",
+  building: "Block B (ECE & EE)",
   floor: 2,
   campusId: "IET",
 };
@@ -173,6 +173,7 @@ export const MOCK_FACULTY_BOOKINGS: FacultyBooking[] = [
   {
     id: "fbk-101",
     facultyId: "usr-fac-01",
+    facultyName: "Dr. Arvind Tripathi",
     title: "Operating Systems makeup lecture",
     purpose: "EXTRA_LECTURE",
     status: "APPROVED",
@@ -189,6 +190,7 @@ export const MOCK_FACULTY_BOOKINGS: FacultyBooking[] = [
   {
     id: "fbk-102",
     facultyId: "usr-fac-01",
+    facultyName: "Dr. Arvind Tripathi",
     title: "CSE HOD briefing",
     purpose: "SEMINAR",
     status: "PENDING",
@@ -205,6 +207,7 @@ export const MOCK_FACULTY_BOOKINGS: FacultyBooking[] = [
   {
     id: "fbk-103",
     facultyId: "usr-fac-01",
+    facultyName: "Dr. Arvind Tripathi",
     title: "Compiler Design extra tutorial",
     purpose: "EXTRA_LECTURE",
     status: "PENDING",
@@ -220,6 +223,7 @@ export const MOCK_FACULTY_BOOKINGS: FacultyBooking[] = [
   {
     id: "fbk-104",
     facultyId: "usr-fac-01",
+    facultyName: "Dr. Arvind Tripathi",
     title: "Evening workshop on process scheduling",
     purpose: "WORKSHOP",
     status: "REJECTED",
@@ -236,6 +240,7 @@ export const MOCK_FACULTY_BOOKINGS: FacultyBooking[] = [
   {
     id: "fbk-105",
     facultyId: "usr-fac-01",
+    facultyName: "Dr. Arvind Tripathi",
     title: "Cancelled lab overflow slot",
     purpose: "REGULAR_CLASS",
     status: "CANCELLED",
@@ -251,6 +256,7 @@ export const MOCK_FACULTY_BOOKINGS: FacultyBooking[] = [
   {
     id: "fbk-106",
     facultyId: "usr-fac-01",
+    facultyName: "Dr. Arvind Tripathi",
     title: "Completed OS quiz slot",
     purpose: "EXAM",
     status: "COMPLETED",
@@ -262,6 +268,41 @@ export const MOCK_FACULTY_BOOKINGS: FacultyBooking[] = [
     classroomId: "iet-cs-101",
     createdAt: "2026-10-28T11:00:00+05:30",
     updatedAt: "2026-11-03T15:05:00+05:30",
+  },
+  {
+    id: "fbk-107",
+    facultyId: "usr-fac-99",
+    facultyName: "Dr. Kavita Mishra",
+    title: "ECE department guest lecture",
+    purpose: "SEMINAR",
+    status: "PENDING",
+    date: "2026-11-12",
+    startTime: "11:00",
+    endTime: "12:00",
+    attendeesCount: 70,
+    venue: EC201,
+    classroomId: "iet-ec-201",
+    description: "Owned by another faculty member. Visible for department awareness only.",
+    createdAt: "2026-11-05T11:00:00+05:30",
+    updatedAt: "2026-11-05T11:00:00+05:30",
+  },
+  {
+    id: "fbk-108",
+    facultyId: "usr-fac-01",
+    facultyName: "Dr. Arvind Tripathi",
+    title: "Clash retry — seminar hall hold",
+    purpose: "WORKSHOP",
+    status: "CONFLICT_DETECTED",
+    date: "2026-11-09",
+    startTime: "10:00",
+    endTime: "13:00",
+    attendeesCount: 80,
+    venue: SH1,
+    classroomId: "iet-sh-01",
+    conflictMessage:
+      "The booking service rejected this window: IET-SH1 already has a technical symposium from 10:00 to 13:00.",
+    createdAt: "2026-11-06T10:00:00+05:30",
+    updatedAt: "2026-11-06T10:05:00+05:30",
   },
 ];
 

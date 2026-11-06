@@ -21,6 +21,7 @@ import type {
 export interface ClassroomService {
   search(filters: ClassroomSearchFilters): Promise<ClassroomSearchResponse>;
   getById(id: string): Promise<Classroom | null>;
+  listCatalog(): Promise<Classroom[]>;
   listBuildings(campusId?: ClassroomSearchFilters["campusId"]): Promise<string[]>;
   getAvailability(query: ClassroomAvailabilityQuery): Promise<RoomAvailability>;
   /**

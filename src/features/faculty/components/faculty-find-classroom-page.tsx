@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,14 +9,11 @@ import { CampusBadge } from "@/components/common/campus-badge";
 import { RoomStatusBadge } from "@/components/common/status-badge";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useFacultyClassroomSearch } from "../hooks/use-faculty-dashboard";
-import type { FacultyClassroomHint } from "../types";
 import { formatFloor } from "../lib/faculty-time";
-import { BookingFormDialog } from "./booking-dialogs";
 import { FacultyEmptyState, FacultyErrorState, FacultyLoadingState } from "./query-state";
 
 export function FacultyFindClassroomPage() {
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<FacultyClassroomHint | null>(null);
   const debounced = useDebounce(query, 250);
   const search = useFacultyClassroomSearch(debounced);
 
@@ -74,7 +72,7 @@ export function FacultyFindClassroomPage() {
                   type="button"
                   size="sm"
                   className="bg-indigo-700 text-white hover:bg-indigo-800"
-                  onClick={() => setSelected(room)}
+                  render={<Link href={`/faculty/bookings/new?classroomId=${room.id}`} />}
                 >
                   Request this room
                 </Button>
@@ -84,11 +82,6 @@ export function FacultyFindClassroomPage() {
         </ul>
       )}
 
-      <BookingFormDialog
-        open={Boolean(selected)}
-        presetRoom={selected}
-        onOpenChange={(open) => !open && setSelected(null)}
-      />
     </div>
   );
 }

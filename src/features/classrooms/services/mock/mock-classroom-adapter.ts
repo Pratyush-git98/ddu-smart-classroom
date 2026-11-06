@@ -103,6 +103,11 @@ class MockClassroomService implements ClassroomService {
     return MOCK_CLASSROOMS.find((room) => room.id === id) ?? null;
   }
 
+  async listCatalog(): Promise<Classroom[]> {
+    await mockDelay(80);
+    return MOCK_CLASSROOMS.map((room) => ({ ...room }));
+  }
+
   async listBuildings(campusId: ClassroomSearchFilters["campusId"] = "ALL"): Promise<string[]> {
     await mockDelay(80);
     return uniqueBuildings(campusId);

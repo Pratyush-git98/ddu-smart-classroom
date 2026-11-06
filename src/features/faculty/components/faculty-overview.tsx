@@ -11,16 +11,13 @@ import { MOCK_FACULTY_DISCLAIMER } from "../services/mock/mock-faculty-dashboard
 import type { FacultyBooking } from "../types";
 import { LectureCard } from "./lecture-card";
 import { BookingCard } from "./booking-card";
-import { BookingDetailDialog, BookingFormDialog, CancelBookingDialog } from "./booking-dialogs";
+import { CancelBookingDialog } from "./booking-dialogs";
 import { FacultyEmptyState, FacultyErrorState, FacultyLoadingState } from "./query-state";
 
 export function FacultyOverview() {
   const { user } = useAuth();
   const overview = useFacultyOverview();
-  const [viewBooking, setViewBooking] = useState<FacultyBooking | null>(null);
-  const [editBooking, setEditBooking] = useState<FacultyBooking | null>(null);
   const [cancelBooking, setCancelBooking] = useState<FacultyBooking | null>(null);
-  const [createOpen, setCreateOpen] = useState(false);
 
   if (overview.isPending) return <FacultyLoadingState label="Loading today's teaching load..." />;
   if (overview.isError || !overview.data) {
@@ -115,8 +112,8 @@ export function FacultyOverview() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-sm font-bold text-slate-900">Pending booking requests</h3>
           <div className="flex gap-2">
-            <Button type="button" size="sm" variant="outline" onClick={() => setCreateOpen(true)}>
-              New requisition
+            <Button type="button" size="sm" variant="outline" render={<Link href="/faculty/bookings/new" />}>
+              New booking
             </Button>
             <Link href="/faculty/bookings" className="text-xs font-semibold text-indigo-700 hover:underline self-center">
               All bookings
@@ -134,8 +131,6 @@ export function FacultyOverview() {
               <BookingCard
                 key={booking.id}
                 booking={booking}
-                onView={setViewBooking}
-                onEdit={setEditBooking}
                 onCancel={setCancelBooking}
               />
             ))}
@@ -143,21 +138,6 @@ export function FacultyOverview() {
         )}
       </section>
 
-      <BookingDetailDialog
-        booking={viewBooking}
-        open={Boolean(viewBooking)}
-        onOpenChange={(open) => !open && setViewBooking(null)}
-      />
-      <BookingFormDialog
-        open={createOpen || Boolean(editBooking)}
-        booking={editBooking}
-        onOpenChange={(open) => {
-          if (!open) {
-            setCreateOpen(false);
-            setEditBooking(null);
-          }
-        }}
-      />
       <CancelBookingDialog
         booking={cancelBooking}
         open={Boolean(cancelBooking)}
