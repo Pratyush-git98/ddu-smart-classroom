@@ -1,12 +1,12 @@
 "use client";
 
-import { AppShell } from "@/components/layout";
 import { RoleGuard } from "@/features/authentication";
+import { StudentShell } from "@/features/student";
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   return (
     <RoleGuard allowedRoles={["STUDENT"]}>
-      <AppShell>{children}</AppShell>
+      <StudentShell>{children}</StudentShell>
     </RoleGuard>
   );
 }

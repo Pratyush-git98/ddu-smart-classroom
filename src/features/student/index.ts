@@ -1,3 +1,11 @@
 export * from "./types";
 export * from "./components/student-schedule-preview";
-
+export * from "./components/student-shell";
+export * from "./components/student-overview";
+export * from "./components/student-timetable-page";
+export * from "./components/find-classroom-page";
+export * from "./components/student-notifications-page";
+export * from "./components/student-profile-page";
+export * from "./components/timetable-class-card";
+export * from "./components/class-status-badge";
+export * from "./services/student-dashboard-service";
