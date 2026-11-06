@@ -4,7 +4,6 @@ import type {
   SampleVenue,
   StudentAcademicContext,
   StudentClassSession,
-  StudentNotificationItem,
 } from "../../types";
 
 /**
@@ -388,44 +387,6 @@ export const MOCK_CHANGE_ALERTS: ClassroomChangeAlert[] = [
     toVenue: IET_BLOCK_B_F2,
     reason: "Sample occupancy clash in Block A lecture hall.",
     publishedAt: "2026-11-04T17:15:00+05:30",
-  },
-];
-
-export const MOCK_STUDENT_NOTIFICATIONS: StudentNotificationItem[] = [
-  {
-    id: "sn-1",
-    title: "Classroom change · Friday 12:00 PM",
-    message: "KCS-503 now meets in sample room EC-201, IET Block B, Floor 2 (was IET-SH1).",
-    kind: "ROOM_CHANGE",
-    publishedAt: "2026-11-06T08:40:00+05:30",
-    isRead: false,
-    href: "/student/timetable?day=Friday",
-  },
-  {
-    id: "sn-2",
-    title: "Lab reminder · OS Lab today",
-    message: "KCS-551 Operating Systems Lab is listed for 02:00 PM in sample computing lab CR-102, Block A Floor 1.",
-    kind: "REMINDER",
-    publishedAt: "2026-11-06T09:05:00+05:30",
-    isRead: false,
-    href: "/student/dashboard",
-  },
-  {
-    id: "sn-3",
-    title: "Wednesday room amendment",
-    message: "KCS-503 Wednesday lecture moved to sample room EC-201, IET Block B.",
-    kind: "TIMETABLE",
-    publishedAt: "2026-11-04T17:15:00+05:30",
-    isRead: true,
-    href: "/student/timetable?day=Wednesday",
-  },
-  {
-    id: "sn-4",
-    title: "IET academic notice",
-    message: "Carry your university ID for biometric attendance at IET Block A smart classrooms.",
-    kind: "GENERAL",
-    publishedAt: "2026-11-03T11:00:00+05:30",
-    isRead: true,
   },
 ];
 

@@ -1,4 +1,4 @@
-import type { BookingPurpose, BookingStatus, CampusLocationId, DayOfWeek } from "@/types";
+import type { BookingPurpose, BookingStatus, CampusLocationId, DayOfWeek, Notification } from "@/types";
 
 export type FacultySessionType = "LECTURE" | "LAB" | "TUTORIAL";
 
@@ -84,16 +84,6 @@ export interface FacultyBookingCommandResult {
   availabilityCheckedAt?: string;
 }
 
-export interface FacultyNotificationItem {
-  id: string;
-  title: string;
-  message: string;
-  kind: "BOOKING" | "SCHEDULE" | "GENERAL";
-  publishedAt: string;
-  isRead: boolean;
-  href?: string;
-}
-
 export interface FacultyProfileContext {
   facultyId: string;
   displayName: string;
@@ -126,7 +116,7 @@ export interface FacultyOverviewData {
   bookings: FacultyBooking[];
   totalBookings: number;
   pendingBookingCount: number;
-  notifications: FacultyNotificationItem[];
+  notifications: Notification[];
   unreadNotificationCount: number;
 }
 

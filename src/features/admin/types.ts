@@ -2,8 +2,7 @@ import type {
   BookingStatus,
   CampusLocationId,
   ClassroomFacility,
-  NotificationCategory,
-  NotificationPriority,
+  Notification,
   RoomStatus,
   RoomType,
   TimetableSlot,
@@ -131,16 +130,7 @@ export interface AdminAuditEntry {
   changeSummary: string;
 }
 
-export interface AdminNotificationItem {
-  id: string;
-  title: string;
-  message: string;
-  category: NotificationCategory;
-  priority: NotificationPriority;
-  timestamp: string;
-  isRead: boolean;
-  audience: "ALL" | "STUDENT" | "FACULTY" | "ADMIN";
-}
+export type AdminNotificationItem = Notification;
 
 export interface AdminTimetableSlot extends TimetableSlot {
   hasConflict: boolean;

@@ -6,7 +6,6 @@ import type { FacultyBooking } from "@/features/faculty/types";
 import type {
   AdminAuditEntry,
   AdminManagedUser,
-  AdminNotificationItem,
   ClassroomIssue,
 } from "../../types";
 
@@ -549,65 +548,3 @@ export const MOCK_ADMIN_AUDIT: AdminAuditEntry[] = [
   },
 ];
 
-export const MOCK_ADMIN_NOTIFICATIONS: AdminNotificationItem[] = [
-  {
-    id: "ntf-01",
-    title: "Four requisitions awaiting clearance",
-    message: "Dean Academics queue includes IET seminar, ECE guest lecture and two extra lectures.",
-    category: "BOOKING_APPROVAL",
-    priority: "HIGH",
-    timestamp: "2026-11-06T11:10:00+05:30",
-    isRead: false,
-    audience: "ADMIN",
-  },
-  {
-    id: "ntf-02",
-    title: "IET Block A clash freeze",
-    message: "Master timetable edits for Block A are locked until Monday 10 Nov 18:00.",
-    category: "TIMETABLE_RESCHEDULE",
-    priority: "URGENT",
-    timestamp: "2026-11-06T07:00:00+05:30",
-    isRead: false,
-    audience: "FACULTY",
-  },
-  {
-    id: "ntf-03",
-    title: "LT-5 display offline",
-    message: "Deeksha Bhawan LT-5 interactive panel dropped from telemetry.",
-    category: "IOT_ALERT",
-    priority: "HIGH",
-    timestamp: "2026-11-06T09:41:00+05:30",
-    isRead: false,
-    audience: "ADMIN",
-  },
-  {
-    id: "ntf-04",
-    title: "Workshop requisition rejected",
-    message: "Evening workshop on process scheduling was declined due to examination briefing.",
-    category: "BOOKING_REJECTION",
-    priority: "NORMAL",
-    timestamp: "2026-11-05T10:16:00+05:30",
-    isRead: true,
-    audience: "FACULTY",
-  },
-  {
-    id: "ntf-05",
-    title: "HVAC servicing window",
-    message: "CR-102 climate work is scheduled Saturday 08:00–12:00. Room remains bookable after noon.",
-    category: "ROOM_MAINTENANCE",
-    priority: "NORMAL",
-    timestamp: "2026-11-05T18:00:00+05:30",
-    isRead: true,
-    audience: "ALL",
-  },
-  {
-    id: "ntf-06",
-    title: "Convocation rehearsal notice",
-    message: "Auditorium is reserved 12 Nov 09:00–13:00 for university rehearsal.",
-    category: "GENERAL_ANNOUNCEMENT",
-    priority: "LOW",
-    timestamp: "2026-11-04T12:00:00+05:30",
-    isRead: true,
-    audience: "ALL",
-  },
-];

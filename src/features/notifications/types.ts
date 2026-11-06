@@ -1,13 +1,12 @@
-import type {
-  SystemNotification,
+export type {
+  Notification,
   NotificationCategory,
+  NotificationChannel,
+  NotificationCommandResult,
+  NotificationDeliveryPreferences,
   NotificationPriority,
+  NotificationQuery,
+  NotificationSeverity,
+  NotificationTarget,
+  SystemNotification,
 } from "@/types";
-
-export type { SystemNotification, NotificationCategory, NotificationPriority };
-
-export interface NotificationItemProps {
-  notification: SystemNotification;
-  onMarkRead?: (id: string) => void;
-}
-

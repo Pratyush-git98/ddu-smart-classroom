@@ -2,17 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SessionUserMenu } from "@/features/authentication/components/session-user-menu";
+import { NotificationDropdown } from "@/features/notifications";
 import { STUDENT_NAV, isStudentNavActive } from "../config/student-nav";
 
 interface StudentTopNavProps {
   onToggleSidebar: () => void;
-  unreadCount?: number;
 }
 
-export function StudentTopNav({ onToggleSidebar, unreadCount = 0 }: StudentTopNavProps) {
+export function StudentTopNav({ onToggleSidebar }: StudentTopNavProps) {
   const pathname = usePathname();
   const current = STUDENT_NAV.find((item) => isStudentNavActive(pathname, item.href));
 
@@ -57,16 +57,7 @@ export function StudentTopNav({ onToggleSidebar, unreadCount = 0 }: StudentTopNa
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Link href="/student/notifications" className="relative">
-            <Button variant="ghost" size="icon" aria-label="Notifications" className="text-slate-600">
-              <Bell className="size-4" />
-            </Button>
-            {unreadCount > 0 && (
-              <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white">
-                {unreadCount}
-              </span>
-            )}
-          </Link>
+          <NotificationDropdown inboxHref="/student/notifications" />
           <SessionUserMenu />
         </div>
       </div>

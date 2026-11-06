@@ -1,7 +1,11 @@
-"use client";
-
+import { Suspense } from "react";
 import { AdminClassroomsPage } from "@/features/admin";
+import { AdminLoadingState } from "@/features/admin/components/query-state";
 
 export default function AdminClassroomsRoute() {
-  return <AdminClassroomsPage />;
+  return (
+    <Suspense fallback={<AdminLoadingState label="Opening classroom catalog..." />}>
+      <AdminClassroomsPage />
+    </Suspense>
+  );
 }

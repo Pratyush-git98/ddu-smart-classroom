@@ -7,20 +7,18 @@ import { CampusBadge } from "@/components/common/campus-badge";
 import { Button } from "@/components/ui/button";
 import { SessionUserMenu } from "@/features/authentication/components/session-user-menu";
 import {
-  Bell,
   Search,
   SlidersHorizontal,
   GraduationCap,
 } from "lucide-react";
+import { NotificationDropdown } from "@/features/notifications";
 
 interface AppHeaderProps {
   onToggleSidebar?: () => void;
-  unreadNotifications?: number;
 }
 
 export function AppHeader({
   onToggleSidebar,
-  unreadNotifications = 2,
 }: AppHeaderProps) {
   const { activeCampus, setActiveCampus } = useActiveCampus();
 
@@ -118,23 +116,7 @@ export function AppHeader({
           </kbd>
         </Button>
 
-        {/* Notifications Icon */}
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-            aria-label="View notifications"
-          >
-            <Bell className="size-4" />
-          </Button>
-          {unreadNotifications > 0 && (
-            <span className="absolute top-1 right-1 flex size-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-blue-600" />
-            </span>
-          )}
-        </div>
+        <NotificationDropdown />
 
         <SessionUserMenu />
       </div>

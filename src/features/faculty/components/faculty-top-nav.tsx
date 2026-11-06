@@ -2,17 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Menu, Search } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SessionUserMenu } from "@/features/authentication/components/session-user-menu";
+import { NotificationDropdown } from "@/features/notifications";
 import { FACULTY_NAV, isFacultyNavActive } from "../config/faculty-nav";
 
 export function FacultyTopNav({
   onToggleSidebar,
-  unreadCount = 0,
 }: {
   onToggleSidebar: () => void;
-  unreadCount?: number;
 }) {
   const pathname = usePathname();
   const current = FACULTY_NAV.find((item) => isFacultyNavActive(pathname, item.href));
@@ -70,16 +69,7 @@ export function FacultyTopNav({
               Find classroom
             </Button>
           </Link>
-          <Link href="/faculty/notifications" className="relative">
-            <Button variant="ghost" size="icon" aria-label="Notifications" className="text-slate-600">
-              <Bell className="size-4" />
-            </Button>
-            {unreadCount > 0 && (
-              <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-indigo-600 text-[9px] font-bold text-white">
-                {unreadCount}
-              </span>
-            )}
-          </Link>
+          <NotificationDropdown inboxHref="/faculty/notifications" />
           <SessionUserMenu />
         </div>
       </div>

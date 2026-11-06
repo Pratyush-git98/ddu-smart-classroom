@@ -1,6 +1,7 @@
 import { mockDelay } from "@/services/api-client";
 import { MOCK_CLASSROOMS } from "@/services/classroom-service";
 import { getBookingService } from "@/features/bookings/services/booking-client";
+import { getNotificationService } from "@/features/notifications/services/notification-client";
 import type { BookingActor } from "@/features/bookings/services/booking-service.interface";
 import type {
   FacultyBooking,
@@ -14,7 +15,6 @@ import type {
 import { lecturesOnDate, toLocalIsoDate } from "../lib/faculty-time";
 import {
   MOCK_FACULTY_LECTURES,
-  MOCK_FACULTY_NOTIFICATIONS,
   MOCK_FACULTY_PROFILE,
 } from "./mock/mock-faculty-dashboard";
 
@@ -46,6 +46,10 @@ class MockFacultyDashboardService implements FacultyDashboardService {
       (item) => item.date > today || (item.date === today && item.endTime > `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
     ).sort((a, b) => `${a.date}${a.startTime}`.localeCompare(`${b.date}${b.startTime}`));
     const bookings = await getBookingService().listBookings("all", actor);
+    const notifications = await getNotificationService().list({
+      role: "FACULTY",
+      recipientId: actor.id,
+    });
 
     return {
       profile: MOCK_FACULTY_PROFILE,
@@ -55,8 +59,8 @@ class MockFacultyDashboardService implements FacultyDashboardService {
       bookings,
       totalBookings: bookings.length,
       pendingBookingCount: bookings.filter((item) => item.status === "PENDING").length,
-      notifications: MOCK_FACULTY_NOTIFICATIONS,
-      unreadNotificationCount: MOCK_FACULTY_NOTIFICATIONS.filter((item) => !item.isRead).length,
+      notifications,
+      unreadNotificationCount: notifications.filter((item) => !item.isRead).length,
     };
   }
 

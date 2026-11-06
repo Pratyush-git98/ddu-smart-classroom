@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CampusBadge } from "@/components/common/campus-badge";
@@ -10,7 +11,8 @@ import { useStudentClassroomSearch } from "../hooks/use-student-dashboard";
 import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "./query-state";
 
 export function FindClassroomPage() {
-  const [query, setQuery] = useState("");
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const debounced = useDebounce(query, 250);
   const search = useStudentClassroomSearch(debounced);
 

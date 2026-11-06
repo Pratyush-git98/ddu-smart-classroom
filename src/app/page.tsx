@@ -283,7 +283,11 @@ export default function HomePage() {
           </div>
 
           <div id="notifications">
-            <NotificationListPreview notifications={MOCK_NOTIFICATIONS} />
+            <NotificationListPreview
+              notifications={MOCK_NOTIFICATIONS.filter((item) =>
+                ["ntf-class-friday", "ntf-schedule-conflict", "ntf-hvac", "ntf-convocation"].includes(item.id)
+              )}
+            />
           </div>
         </section>
 

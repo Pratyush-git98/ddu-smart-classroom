@@ -2,17 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SessionUserMenu } from "@/features/authentication/components/session-user-menu";
+import { NotificationDropdown } from "@/features/notifications";
 import { ADMIN_NAV, isAdminNavActive } from "../config/admin-nav";
 
 export function AdminTopNav({
   onToggleSidebar,
-  unreadCount = 0,
 }: {
   onToggleSidebar: () => void;
-  unreadCount?: number;
 }) {
   const pathname = usePathname();
   const current = ADMIN_NAV.find((item) => isAdminNavActive(pathname, item.href));
@@ -58,16 +57,7 @@ export function AdminTopNav({
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Link href="/admin/notifications" className="relative">
-            <Button variant="ghost" size="icon" aria-label="Notifications" className="text-slate-600">
-              <Bell className="size-4" />
-            </Button>
-            {unreadCount > 0 && (
-              <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-violet-600 text-[9px] font-bold text-white">
-                {unreadCount}
-              </span>
-            )}
-          </Link>
+          <NotificationDropdown inboxHref="/admin/notifications" />
           <SessionUserMenu />
         </div>
       </div>

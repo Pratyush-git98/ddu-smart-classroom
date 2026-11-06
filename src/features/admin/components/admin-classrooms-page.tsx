@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Classroom, RoomStatus, RoomType } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,8 @@ import { ClassroomFormDialog } from "./classroom-form-dialog";
 export function AdminClassroomsPage() {
   const { toast } = useToast();
   const commands = useAdminCommands();
-  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
   const debounced = useDebounce(search, 250);
   const [campusId, setCampusId] = useState<"ALL" | "IET" | "DEEKSHA_BHAWAN">("ALL");
   const [status, setStatus] = useState<RoomStatus | "ALL">("ALL");

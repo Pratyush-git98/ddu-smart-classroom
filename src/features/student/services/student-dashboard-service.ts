@@ -1,5 +1,6 @@
 import type { DayOfWeek } from "@/types";
 import { mockDelay } from "@/services/api-client";
+import { getNotificationService } from "@/features/notifications/services/notification-client";
 import { MOCK_CLASSROOMS } from "@/services/classroom-service";
 import type {
   StudentAcademicContext,
@@ -11,7 +12,6 @@ import {
   filterSessionsByDay,
   MOCK_CHANGE_ALERTS,
   MOCK_STUDENT_CONTEXT,
-  MOCK_STUDENT_NOTIFICATIONS,
   MOCK_WEEKLY_SESSIONS,
 } from "./mock/mock-student-dashboard";
 
@@ -30,12 +30,16 @@ export interface StudentDashboardService {
 class MockStudentDashboardService implements StudentDashboardService {
   async getOverview(): Promise<StudentDashboardOverview> {
     await mockDelay(420);
+    const notifications = await getNotificationService().list({
+      role: "STUDENT",
+      recipientId: MOCK_STUDENT_CONTEXT.studentId,
+    });
     return {
       academic: MOCK_STUDENT_CONTEXT,
       weekSessions: MOCK_WEEKLY_SESSIONS,
       changeAlerts: MOCK_CHANGE_ALERTS,
-      notifications: MOCK_STUDENT_NOTIFICATIONS,
-      unreadNotificationCount: MOCK_STUDENT_NOTIFICATIONS.filter((item) => !item.isRead).length,
+      notifications,
+      unreadNotificationCount: notifications.filter((item) => !item.isRead).length,
     };
   }
 

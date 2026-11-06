@@ -1,4 +1,4 @@
-import type { FacultyBooking, FacultyLecture, FacultyNotificationItem, FacultyProfileContext, FacultyVenue } from "../../types";
+import type { FacultyBooking, FacultyLecture, FacultyProfileContext, FacultyVenue } from "../../types";
 
 export const MOCK_FACULTY_DISCLAIMER =
   "Sample faculty timetable and requisitions for portal preview. Room codes are facility-catalog locators, not official IET allotments. Clash checks run on the academic booking service.";
@@ -306,41 +306,3 @@ export const MOCK_FACULTY_BOOKINGS: FacultyBooking[] = [
   },
 ];
 
-export const MOCK_FACULTY_NOTIFICATIONS: FacultyNotificationItem[] = [
-  {
-    id: "fn-1",
-    title: "Requisition pending · CSE HOD briefing",
-    message: "IET-SH1 on 10 Nov, 3:00 PM is awaiting Dean Academics clearance. Clash checks run on the booking service.",
-    kind: "BOOKING",
-    publishedAt: "2026-11-06T08:21:00+05:30",
-    isRead: false,
-    href: "/faculty/bookings",
-  },
-  {
-    id: "fn-2",
-    title: "Makeup lecture approved",
-    message: "Operating Systems makeup lecture on Saturday 7 Nov, 2:00 PM in sample hall CR-101 is approved.",
-    kind: "BOOKING",
-    publishedAt: "2026-11-04T16:41:00+05:30",
-    isRead: false,
-    href: "/faculty/bookings",
-  },
-  {
-    id: "fn-3",
-    title: "Workshop requisition declined",
-    message: "Evening workshop on 8 Nov was rejected: seminar hall reserved for examination briefing.",
-    kind: "BOOKING",
-    publishedAt: "2026-11-05T10:16:00+05:30",
-    isRead: true,
-    href: "/faculty/bookings/history",
-  },
-  {
-    id: "fn-4",
-    title: "Friday lab reminder",
-    message: "KCS-551 Operating Systems Lab is listed today at 2:00 PM in sample computing lab CR-102, Block A Floor 1.",
-    kind: "SCHEDULE",
-    publishedAt: "2026-11-06T09:00:00+05:30",
-    isRead: true,
-    href: "/faculty/schedule",
-  },
-];

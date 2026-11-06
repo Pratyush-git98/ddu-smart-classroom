@@ -148,6 +148,11 @@ export function useAdminCommands() {
     onSuccess: () => invalidateAdmin(queryClient),
   });
 
+  const markAllNotificationsRead = useMutation({
+    mutationFn: () => adminDashboardService.markAllNotificationsRead(),
+    onSuccess: () => invalidateAdmin(queryClient),
+  });
+
   return {
     actor,
     createClassroom,
@@ -158,5 +163,6 @@ export function useAdminCommands() {
     rejectBooking,
     updateIssueStatus,
     markNotificationRead,
+    markAllNotificationsRead,
   };
 }

@@ -1,4 +1,5 @@
 import { mockDelay } from "@/services/api-client";
+import { getNotificationService } from "@/features/notifications/services/notification-client";
 import type { Classroom, ClassroomFacility } from "@/types";
 import { windowsOverlap } from "@/features/classrooms/lib/classroom-labels";
 import type { FacultyBooking } from "@/features/faculty/types";
@@ -27,7 +28,6 @@ import type {
 } from "../types";
 import {
   MOCK_ADMIN_AUDIT,
-  MOCK_ADMIN_NOTIFICATIONS,
   MOCK_ADMIN_USERS,
   MOCK_CLASSROOM_ISSUES,
   seedBookings,
@@ -59,6 +59,7 @@ export interface AdminDashboardService {
   updateIssueStatus(id: string, status: IssueStatus, actor: AdminActor): Promise<AdminCommandResult<ClassroomIssue>>;
   listNotifications(): Promise<AdminNotificationItem[]>;
   markNotificationRead(id: string): Promise<AdminCommandResult>;
+  markAllNotificationsRead(): Promise<AdminCommandResult>;
   listAuditLogs(query: AdminAuditQuery): Promise<PaginatedResult<AdminAuditEntry>>;
   getReports(): Promise<AdminReportSummary>;
 }
@@ -68,7 +69,6 @@ let bookings = seedBookings();
 let users = MOCK_ADMIN_USERS.map((item) => ({ ...item }));
 let issues = MOCK_CLASSROOM_ISSUES.map((item) => ({ ...item }));
 let auditLogs = MOCK_ADMIN_AUDIT.map((item) => ({ ...item }));
-let notifications = MOCK_ADMIN_NOTIFICATIONS.map((item) => ({ ...item }));
 const timetable = seedTimetable();
 
 function nowIso(): string {
@@ -467,14 +467,17 @@ class MockAdminDashboardService implements AdminDashboardService {
   }
 
   async listNotifications(): Promise<AdminNotificationItem[]> {
-    await mockDelay(150);
-    return [...notifications];
+    return getNotificationService().list({ role: "ADMIN" });
   }
 
   async markNotificationRead(id: string): Promise<AdminCommandResult> {
-    await mockDelay(80);
-    notifications = notifications.map((item) => (item.id === id ? { ...item, isRead: true } : item));
-    return { success: true, message: "Marked as read." };
+    const result = await getNotificationService().markAsRead(id);
+    return { success: result.success, message: result.message };
+  }
+
+  async markAllNotificationsRead(): Promise<AdminCommandResult> {
+    const result = await getNotificationService().markAllAsRead({ role: "ADMIN" });
+    return { success: result.success, message: result.message };
   }
 
   async listAuditLogs(query: AdminAuditQuery): Promise<PaginatedResult<AdminAuditEntry>> {

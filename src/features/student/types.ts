@@ -1,4 +1,4 @@
-import type { CampusLocationId, DayOfWeek } from "@/types";
+import type { CampusLocationId, DayOfWeek, Notification } from "@/types";
 
 export type StudentSessionType = "LECTURE" | "LAB" | "TUTORIAL";
 
@@ -52,16 +52,6 @@ export interface ClassroomChangeAlert {
   publishedAt: string;
 }
 
-export interface StudentNotificationItem {
-  id: string;
-  title: string;
-  message: string;
-  kind: "ROOM_CHANGE" | "TIMETABLE" | "GENERAL" | "REMINDER";
-  publishedAt: string;
-  isRead: boolean;
-  href?: string;
-}
-
 export interface StudentAcademicContext {
   studentId: string;
   displayName: string;
@@ -81,7 +71,7 @@ export interface StudentDashboardOverview {
   academic: StudentAcademicContext;
   weekSessions: StudentClassSession[];
   changeAlerts: ClassroomChangeAlert[];
-  notifications: StudentNotificationItem[];
+  notifications: Notification[];
   unreadNotificationCount: number;
 }
 
