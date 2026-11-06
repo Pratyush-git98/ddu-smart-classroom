@@ -1,4 +1,13 @@
 export * from "./types";
 export * from "./components/faculty-requisition-card";
 export * from "./components/faculty-quick-actions";
-
+export * from "./components/faculty-shell";
+export * from "./components/faculty-overview";
+export * from "./components/faculty-schedule-page";
+export * from "./components/faculty-find-classroom-page";
+export * from "./components/faculty-bookings-page";
+export * from "./components/faculty-notifications-page";
+export * from "./components/faculty-profile-page";
+export * from "./components/lecture-card";
+export * from "./components/booking-card";
+export * from "./services/faculty-dashboard-service";
