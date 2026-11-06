@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginInput } from "@/schemas/auth";
 import { useAuth } from "../hooks/use-auth";
@@ -36,9 +36,9 @@ export function LoginForm() {
 
   const {
     register,
+    control,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({
     resolver: zodResolver(LoginSchema),
@@ -50,7 +50,7 @@ export function LoginForm() {
     },
   });
 
-  const currentEmail = watch("email");
+  const currentEmail = useWatch({ control, name: "email" });
 
   const handleSelectDemoCredential = (cred: DemoCredential) => {
     setValue("email", cred.email, { shouldValidate: true });
@@ -206,6 +206,7 @@ export function LoginForm() {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none"
               aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
             >
               {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
@@ -220,7 +221,17 @@ export function LoginForm() {
 
         {/* Remember Me Checkbox */}
         <div className="flex items-center space-x-2 pt-0.5">
-          <Checkbox id="rememberMe" {...register("rememberMe")} />
+          <Controller
+            name="rememberMe"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="rememberMe"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
           <Label
             htmlFor="rememberMe"
             className="text-xs font-normal text-slate-600 cursor-pointer"

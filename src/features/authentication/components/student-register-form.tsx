@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   StudentRegistrationSchema,
@@ -20,7 +20,6 @@ import {
   Mail,
   Hash,
   Building,
-  GraduationCap,
   Layers,
   Calendar,
   Lock,
@@ -29,7 +28,6 @@ import {
   UserPlus,
   Loader2,
   AlertCircle,
-  FileCheck2,
 } from "lucide-react";
 
 export function StudentRegisterForm() {
@@ -41,8 +39,8 @@ export function StudentRegisterForm() {
 
   const {
     register,
+    control,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<StudentRegistrationInput>({
     resolver: zodResolver(StudentRegistrationSchema),
@@ -63,7 +61,7 @@ export function StudentRegisterForm() {
     },
   });
 
-  const passwordValue = watch("password");
+  const passwordValue = useWatch({ control, name: "password" });
 
   const onSubmit = async (data: StudentRegistrationInput) => {
     setGeneralError(null);
@@ -355,7 +353,17 @@ export function StudentRegisterForm() {
       {/* Terms and Code of Conduct Checkbox */}
       <div className="space-y-1 pt-2">
         <div className="flex items-start space-x-2">
-          <Checkbox id="acceptTerms" {...register("acceptTerms")} />
+          <Controller
+            name="acceptTerms"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="acceptTerms"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
           <Label
             htmlFor="acceptTerms"
             className="text-xs font-normal text-slate-600 cursor-pointer leading-tight"

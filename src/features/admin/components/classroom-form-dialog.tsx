@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Classroom, ClassroomFacility } from "@/types";
 import { AdminClassroomFormSchema, type AdminClassroomFormInput } from "@/schemas/classroom";
@@ -85,7 +85,7 @@ export function ClassroomFormDialog({
     );
   }, [classroom, form, open]);
 
-  const selected = form.watch("facilities") ?? [];
+  const selected = useWatch({ control: form.control, name: "facilities" }) ?? [];
 
   const toggleFacility = (id: ClassroomFacility) => {
     const next = selected.includes(id) ? selected.filter((item) => item !== id) : [...selected, id];

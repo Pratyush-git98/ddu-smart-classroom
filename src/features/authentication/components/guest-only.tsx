@@ -1,14 +1,19 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../hooks/use-auth";
 import { getDashboardPathForUser } from "../config/role-routes";
 import { AuthLoadingScreen } from "./auth-loading-screen";
 import { SessionExpiredPanel } from "./session-expired-panel";
 
+function subscribeNoop() {
+  return () => {};
+}
+
 export function GuestOnly({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
   const { isLoading, isAuthenticated, isSessionExpired, user } = useAuth();
 
   useEffect(() => {
@@ -17,7 +22,7 @@ export function GuestOnly({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated, router, user]);
 
-  if (isLoading) {
+  if (!mounted || isLoading) {
     return <AuthLoadingScreen />;
   }
 

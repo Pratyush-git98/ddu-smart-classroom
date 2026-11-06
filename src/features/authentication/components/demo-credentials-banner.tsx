@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { DEMO_CREDENTIALS } from "../services/auth-service";
+import { DEMO_CREDENTIALS } from "../services/mock/mock-users";
 import type { DemoCredential } from "../types";
 import { Sparkles, UserCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

@@ -1,24 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { AlertCircle, Inbox, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/common";
+import { QueryEmptyState, QueryErrorState, QueryLoadingState } from "@/components/query/query-state";
 
 export function FacultyLoadingState({ label = "Loading faculty workspace..." }: { label?: string }) {
-  return (
-    <div className="space-y-3" role="status" aria-live="polite">
-      <div className="flex items-center gap-2 text-xs text-slate-500">
-        <Loader2 className="size-4 animate-spin text-indigo-600" />
-        {label}
-      </div>
-      <div className="grid gap-3">
-        <div className="h-24 animate-pulse rounded-xl bg-slate-200/70" />
-        <div className="h-36 animate-pulse rounded-xl bg-slate-200/60" />
-        <div className="h-28 animate-pulse rounded-xl bg-slate-200/50" />
-      </div>
-    </div>
-  );
+  return <QueryLoadingState label={label} accentClassName="text-indigo-600" />;
 }
 
 export function FacultyErrorState({
@@ -29,17 +15,11 @@ export function FacultyErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <EmptyState
-      icon={AlertCircle}
+    <QueryErrorState
       title="Unable to load faculty data"
-      description={message ?? "The faculty academic service could not be reached."}
-      action={
-        onRetry ? (
-          <Button type="button" size="sm" onClick={onRetry} className="bg-indigo-700 text-white hover:bg-indigo-800">
-            Try again
-          </Button>
-        ) : undefined
-      }
+      message={message ?? "The faculty academic service could not be reached."}
+      onRetry={onRetry}
+      actionClassName="bg-indigo-700 text-white hover:bg-indigo-800"
     />
   );
 }
@@ -53,5 +33,5 @@ export function FacultyEmptyState({
   description: string;
   action?: ReactNode;
 }) {
-  return <EmptyState icon={Inbox} title={title} description={description} action={action} />;
+  return <QueryEmptyState title={title} description={description} action={action} />;
 }

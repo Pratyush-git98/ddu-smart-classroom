@@ -76,10 +76,12 @@ class HttpClassroomService implements ClassroomService {
   }
 }
 
+const classroomService = new HttpClassroomService();
+
 /**
  * Swap this HTTP adapter for a campus API client if the route surface changes.
  * Hooks should import `getClassroomService()` only.
  */
 export function getClassroomService(): ClassroomService {
-  return new HttpClassroomService();
+  return classroomService;
 }

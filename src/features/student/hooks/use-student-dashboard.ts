@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { DayOfWeek } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
 import { QUERY_CACHE } from "@/lib/query-cache-policy";
 import { queryKeys } from "@/lib/query-keys";
-import { studentDashboardService } from "../services/student-dashboard-service";
+import { getStudentDashboardService } from "../services/student-dashboard-client";
 
 export function useStudentOverview() {
   const { user } = useAuth();
   return useQuery({
     queryKey: [...queryKeys.dashboards.student, "overview", user?.id],
-    queryFn: () => studentDashboardService.getOverview(),
+    queryFn: () => getStudentDashboardService().getOverview(),
     enabled: Boolean(user),
   });
 }
@@ -21,7 +21,7 @@ export function useStudentTimetable(day: DayOfWeek | "ALL" = "ALL") {
   const { user } = useAuth();
   return useQuery({
     queryKey: queryKeys.timetable.student(user?.id),
-    queryFn: () => studentDashboardService.getWeeklyTimetable("ALL"),
+    queryFn: () => getStudentDashboardService().getWeeklyTimetable("ALL"),
     select: (sessions) => (day === "ALL" ? sessions : sessions.filter((item) => item.dayOfWeek === day)),
     staleTime: QUERY_CACHE.timetable.staleTimeMs,
     gcTime: QUERY_CACHE.timetable.gcTimeMs,
@@ -33,7 +33,7 @@ export function useStudentClassroomSearch(query: string) {
   const normalized = query.trim().toLowerCase();
   return useQuery({
     queryKey: queryKeys.classrooms.locator("student", normalized),
-    queryFn: () => studentDashboardService.searchClassrooms(query),
+    queryFn: () => getStudentDashboardService().searchClassrooms(query),
     staleTime: QUERY_CACHE.classroomMetadata.staleTimeMs,
     gcTime: QUERY_CACHE.classroomMetadata.gcTimeMs,
     placeholderData: keepPreviousData,
@@ -45,7 +45,7 @@ export function useStudentAcademicContext() {
   const { user } = useAuth();
   return useQuery({
     queryKey: queryKeys.profiles.student(user?.id),
-    queryFn: () => studentDashboardService.getAcademicContext(),
+    queryFn: () => getStudentDashboardService().getAcademicContext(),
     staleTime: QUERY_CACHE.profiles.staleTimeMs,
     gcTime: QUERY_CACHE.profiles.gcTimeMs,
     enabled: Boolean(user),
@@ -53,13 +53,29 @@ export function useStudentAcademicContext() {
   });
 }
 
+const clockTicks = new Map<number, number>();
+
 export function useNow(intervalMs = 30_000) {
-  const [now, setNow] = useState(() => new Date());
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      const id = window.setInterval(() => {
+        clockTicks.set(intervalMs, Date.now());
+        onStoreChange();
+      }, intervalMs);
+      queueMicrotask(() => {
+        clockTicks.set(intervalMs, Date.now());
+        onStoreChange();
+      });
+      return () => window.clearInterval(id);
+    },
+    [intervalMs]
+  );
 
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(new Date()), intervalMs);
-    return () => window.clearInterval(id);
-  }, [intervalMs]);
+  const tick = useSyncExternalStore(
+    subscribe,
+    () => clockTicks.get(intervalMs) ?? 0,
+    () => 0
+  );
 
-  return now;
+  return tick === 0 ? null : new Date(tick);
 }

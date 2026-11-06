@@ -12,7 +12,7 @@ export function NextClassHero({
   now,
 }: {
   session: StudentClassSession | null;
-  now: Date;
+  now: Date | null;
 }) {
   if (!session) {
     return (

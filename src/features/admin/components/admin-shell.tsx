@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { MobileNavDrawer } from "@/components/layout/mobile-nav-drawer";
 import { useUnreadNotificationCount } from "@/features/notifications";
 import { useAdminOverview } from "../hooks/use-admin-dashboard";
 import { AdminSidebar } from "./admin-sidebar";
@@ -20,23 +21,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <AdminSidebar unreadCount={unreadCount} pendingCount={pendingCount} issueCount={issueCount} />
       </div>
 
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div
-            className="fixed inset-0 bg-slate-950/70"
-            onClick={() => setMobileOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="relative z-50 h-full w-72">
-            <AdminSidebar
-              unreadCount={unreadCount}
-              pendingCount={pendingCount}
-              issueCount={issueCount}
-              onClose={() => setMobileOpen(false)}
-            />
-          </div>
-        </div>
-      )}
+      <MobileNavDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} label="Admin navigation">
+        <AdminSidebar
+          unreadCount={unreadCount}
+          pendingCount={pendingCount}
+          issueCount={issueCount}
+          onClose={() => setMobileOpen(false)}
+        />
+      </MobileNavDrawer>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminTopNav onToggleSidebar={() => setMobileOpen(true)} />

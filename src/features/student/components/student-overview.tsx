@@ -38,8 +38,8 @@ export function StudentOverview() {
 
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm">
         <p className="font-medium text-slate-700">
-          You have <span className="font-bold text-slate-900">{unreadNotificationCount}</span> unread
-          notice{unreadNotificationCount === 1 ? "" : "s"}
+          You have <span className="font-bold text-slate-900">{unreadNotificationCount}</span>{" "}
+          unread {unreadNotificationCount === 1 ? "notice" : "notices"}
         </p>
         <Link
           href="/student/notifications"

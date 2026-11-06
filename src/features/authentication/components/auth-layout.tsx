@@ -5,15 +5,10 @@ import Link from "next/link";
 import { DDUGU_BRAND, CAMPUS_FACILITIES } from "@/lib/design-tokens";
 import { Badge } from "@/components/ui/badge";
 import {
-  GraduationCap,
   Building2,
   Landmark,
   ShieldCheck,
-  Radio,
-  Clock,
-  Sparkles,
   ArrowLeft,
-  Tv,
 } from "lucide-react";
 
 interface AuthLayoutProps {
@@ -186,7 +181,7 @@ export function AuthLayout({
               <span className="font-bold text-xs tracking-tight text-slate-900 block">
                 {DDUGU_BRAND.shortName}
               </span>
-              <span className="text-[10px] text-slate-500">Smart Classroom System</span>
+              <span className="text-[10px] text-slate-500">{subtitle}</span>
             </div>
           </Link>
           <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-700 border-blue-200">
@@ -220,7 +215,7 @@ export function AuthLayout({
             </a>
           </div>
           <p className="text-[11px] text-slate-400">
-            © {new Date().getFullYear()} {DDUGU_BRAND.name}, Gorakhpur. All rights reserved.
+            © {DDUGU_BRAND.established}–2026 {DDUGU_BRAND.name}, Gorakhpur. All rights reserved.
           </p>
         </div>
       </div>

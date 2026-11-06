@@ -1,8 +1,4 @@
-import type {
-  WebPushCapabilityResult,
-  WebPushPayload,
-  WebPushSubscriptionInput,
-} from "@/types";
+import type { WebPushCapabilityResult } from "@/types";
 import type { WebPushNotificationChannel } from "../notification-service.interface";
 
 export const WEB_PUSH_UNSUPPORTED_MESSAGE =
@@ -27,15 +23,15 @@ export class UnsupportedWebPushChannel implements WebPushNotificationChannel {
     return false;
   }
 
-  async subscribe(_subscription: WebPushSubscriptionInput): Promise<WebPushCapabilityResult> {
+  async subscribe(): Promise<WebPushCapabilityResult> {
     return unsupported();
   }
 
-  async unsubscribe(_endpoint: string): Promise<WebPushCapabilityResult> {
+  async unsubscribe(): Promise<WebPushCapabilityResult> {
     return unsupported();
   }
 
-  async send(_payload: WebPushPayload): Promise<WebPushCapabilityResult> {
+  async send(): Promise<WebPushCapabilityResult> {
     return unsupported();
   }
 }

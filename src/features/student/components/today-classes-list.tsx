@@ -11,9 +11,9 @@ export function TodayClassesList({
   now,
 }: {
   sessions: StudentClassSession[];
-  now: Date;
+  now: Date | null;
 }) {
-  const academicDay = getAcademicDayOfWeek(now);
+  const academicDay = now ? getAcademicDayOfWeek(now) : getAcademicDayOfWeek();
 
   if (!academicDay) {
     return (

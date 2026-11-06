@@ -12,8 +12,9 @@ const JS_DAY_TO_ACADEMIC: Record<number, DayOfWeek | null> = {
   6: "Saturday",
 };
 
-export function getAcademicDayOfWeek(date = new Date()): DayOfWeek | null {
-  return JS_DAY_TO_ACADEMIC[date.getDay()] ?? null;
+export function getAcademicDayOfWeek(date?: Date | null): DayOfWeek | null {
+  const clock = date ?? new Date();
+  return JS_DAY_TO_ACADEMIC[clock.getDay()] ?? null;
 }
 
 export function parseMinutes(hhmm: string): number {
@@ -40,10 +41,13 @@ export function currentMinutes(date = new Date()): number {
 
 export function resolveSessionStatus(
   session: StudentClassSession,
-  now = new Date(),
-  academicDay: DayOfWeek | null = getAcademicDayOfWeek(now)
+  now?: Date | null,
+  academicDay: DayOfWeek | null = now ? getAcademicDayOfWeek(now) : null
 ): ClassSessionStatus {
   if (session.cancelled) return "CANCELLED";
+  if (!now) {
+    return session.previousVenue ? "ROOM_CHANGED" : "UPCOMING";
+  }
 
   const isToday = academicDay === session.dayOfWeek;
   const start = parseMinutes(session.startTime);
@@ -74,8 +78,9 @@ export function getTodaySessions(
 
 export function getNextUpcomingSession(
   sessions: StudentClassSession[],
-  now = new Date()
+  now?: Date | null
 ): StudentClassSession | null {
+  if (!now) return getTodaySessions(sessions)[0] ?? null;
   const today = getTodaySessions(sessions, getAcademicDayOfWeek(now));
   const nowMins = currentMinutes(now);
   return (
@@ -86,7 +91,8 @@ export function getNextUpcomingSession(
   );
 }
 
-export function getCountdownLabel(session: StudentClassSession, now = new Date()): string {
+export function getCountdownLabel(session: StudentClassSession, now?: Date | null): string {
+  if (!now) return "Clock syncing…";
   const status = resolveSessionStatus(session, now);
   const nowMins = currentMinutes(now);
   const start = parseMinutes(session.startTime);

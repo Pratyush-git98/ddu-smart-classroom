@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Production authorization boundary.
+ * Production authorization boundary (Next.js 16 `proxy` convention).
  *
- * When campus SSO or a secure API is wired, this middleware MUST:
+ * When campus SSO or a secure API is wired, this proxy MUST:
  * 1. Read the httpOnly session cookie issued by the identity provider.
  * 2. Validate the session with the backend (or a signed JWT public key).
  * 3. Redirect unauthenticated users to /login.
@@ -14,7 +14,8 @@ import type { NextRequest } from "next/server";
  * this matcher is a documented placeholder. Client RoleGuard is UX-only and
  * is not a substitute for this check.
  */
-export function middleware(_request: NextRequest) {
+export function proxy(request: NextRequest) {
+  void request;
   return NextResponse.next();
 }
 

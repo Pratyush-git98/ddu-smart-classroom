@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { MobileNavDrawer } from "@/components/layout/mobile-nav-drawer";
 import { useUnreadNotificationCount } from "@/features/notifications";
 import { useFacultyOverview } from "../hooks/use-faculty-dashboard";
 import { FacultySidebar } from "./faculty-sidebar";
@@ -19,22 +20,13 @@ export function FacultyShell({ children }: { children: ReactNode }) {
         <FacultySidebar unreadCount={unreadCount} pendingCount={pendingCount} />
       </div>
 
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div
-            className="fixed inset-0 bg-slate-950/70"
-            onClick={() => setMobileOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="relative z-50 h-full w-72">
-            <FacultySidebar
-              unreadCount={unreadCount}
-              pendingCount={pendingCount}
-              onClose={() => setMobileOpen(false)}
-            />
-          </div>
-        </div>
-      )}
+      <MobileNavDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} label="Faculty navigation">
+        <FacultySidebar
+          unreadCount={unreadCount}
+          pendingCount={pendingCount}
+          onClose={() => setMobileOpen(false)}
+        />
+      </MobileNavDrawer>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <FacultyTopNav onToggleSidebar={() => setMobileOpen(true)} />

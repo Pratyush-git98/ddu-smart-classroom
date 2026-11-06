@@ -10,7 +10,7 @@ import {
 } from "@/lib/invalidate-queries";
 import { QUERY_CACHE } from "@/lib/query-cache-policy";
 import { queryKeys } from "@/lib/query-keys";
-import { adminDashboardService } from "../services/admin-dashboard-service";
+import { getAdminDashboardService } from "../services/admin-dashboard-client";
 import type {
   AdminActor,
   AdminAuditQuery,
@@ -31,14 +31,14 @@ function useAdminActor(): AdminActor | null {
 export function useAdminOverview() {
   return useQuery({
     queryKey: [...queryKeys.dashboards.admin, "overview"],
-    queryFn: () => adminDashboardService.getOverview(),
+    queryFn: () => getAdminDashboardService().getOverview(),
   });
 }
 
 export function useAdminClassrooms(query: AdminClassroomQuery) {
   return useQuery({
-    queryKey: [...queryKeys.dashboards.admin, "classrooms", query],
-    queryFn: () => adminDashboardService.listClassrooms(query),
+    queryKey: [...queryKeys.dashboards.admin, "classrooms", JSON.stringify(query)],
+    queryFn: () => getAdminDashboardService().listClassrooms(query),
     staleTime: QUERY_CACHE.classroomMetadata.staleTimeMs,
     gcTime: QUERY_CACHE.classroomMetadata.gcTimeMs,
     placeholderData: keepPreviousData,
@@ -48,7 +48,7 @@ export function useAdminClassrooms(query: AdminClassroomQuery) {
 export function useAdminBuildings() {
   return useQuery({
     queryKey: [...queryKeys.dashboards.admin, "buildings"],
-    queryFn: () => adminDashboardService.listBuildings(),
+    queryFn: () => getAdminDashboardService().listBuildings(),
     staleTime: QUERY_CACHE.classroomMetadata.staleTimeMs,
     gcTime: QUERY_CACHE.classroomMetadata.gcTimeMs,
     refetchOnWindowFocus: false,
@@ -57,8 +57,8 @@ export function useAdminBuildings() {
 
 export function useAdminUsers(query: AdminUserQuery) {
   return useQuery({
-    queryKey: [...queryKeys.dashboards.admin, "users", query],
-    queryFn: () => adminDashboardService.listUsers(query),
+    queryKey: [...queryKeys.dashboards.admin, "users", JSON.stringify(query)],
+    queryFn: () => getAdminDashboardService().listUsers(query),
     staleTime: QUERY_CACHE.profiles.staleTimeMs,
     placeholderData: keepPreviousData,
   });
@@ -66,8 +66,8 @@ export function useAdminUsers(query: AdminUserQuery) {
 
 export function useAdminApprovals(query: AdminBookingQuery) {
   return useQuery({
-    queryKey: [...queryKeys.bookings.all, "admin-approvals", query],
-    queryFn: () => adminDashboardService.listApprovals(query),
+    queryKey: queryKeys.bookings.adminApprovals(JSON.stringify(query)),
+    queryFn: () => getAdminDashboardService().listApprovals(query),
     staleTime: QUERY_CACHE.bookings.staleTimeMs,
     placeholderData: keepPreviousData,
   });
@@ -76,7 +76,7 @@ export function useAdminApprovals(query: AdminBookingQuery) {
 export function useAdminTimetable() {
   return useQuery({
     queryKey: queryKeys.timetable.admin(),
-    queryFn: () => adminDashboardService.listTimetable(),
+    queryFn: () => getAdminDashboardService().listTimetable(),
     staleTime: QUERY_CACHE.timetable.staleTimeMs,
     gcTime: QUERY_CACHE.timetable.gcTimeMs,
   });
@@ -84,24 +84,24 @@ export function useAdminTimetable() {
 
 export function useAdminIssues(query: AdminIssueQuery) {
   return useQuery({
-    queryKey: [...queryKeys.dashboards.admin, "issues", query],
-    queryFn: () => adminDashboardService.listIssues(query),
+    queryKey: [...queryKeys.dashboards.admin, "issues", JSON.stringify(query)],
+    queryFn: () => getAdminDashboardService().listIssues(query),
     placeholderData: keepPreviousData,
   });
 }
 
 export function useAdminNotifications() {
   return useQuery({
-    queryKey: [...queryKeys.notifications.all, "admin"],
-    queryFn: () => adminDashboardService.listNotifications(),
+    queryKey: queryKeys.notifications.admin(),
+    queryFn: () => getAdminDashboardService().listNotifications(),
     staleTime: QUERY_CACHE.notifications.staleTimeMs,
   });
 }
 
 export function useAdminAuditLogs(query: AdminAuditQuery) {
   return useQuery({
-    queryKey: [...queryKeys.dashboards.admin, "audit", query],
-    queryFn: () => adminDashboardService.listAuditLogs(query),
+    queryKey: [...queryKeys.dashboards.admin, "audit", JSON.stringify(query)],
+    queryFn: () => getAdminDashboardService().listAuditLogs(query),
     placeholderData: keepPreviousData,
   });
 }
@@ -109,7 +109,7 @@ export function useAdminAuditLogs(query: AdminAuditQuery) {
 export function useAdminReports() {
   return useQuery({
     queryKey: [...queryKeys.dashboards.admin, "reports"],
-    queryFn: () => adminDashboardService.getReports(),
+    queryFn: () => getAdminDashboardService().getReports(),
   });
 }
 
@@ -124,58 +124,58 @@ export function useAdminCommands() {
 
   const createClassroom = useMutation({
     mutationFn: async (draft: AdminClassroomDraft) =>
-      adminDashboardService.createClassroom(draft, await requireActor()),
+      getAdminDashboardService().createClassroom(draft, await requireActor()),
     onSuccess: () => invalidateAfterClassroomMutation(queryClient),
   });
 
   const updateClassroom = useMutation({
     mutationFn: async ({ id, draft }: { id: string; draft: AdminClassroomDraft }) =>
-      adminDashboardService.updateClassroom(id, draft, await requireActor()),
+      getAdminDashboardService().updateClassroom(id, draft, await requireActor()),
     onSuccess: () => invalidateAfterClassroomMutation(queryClient),
   });
 
   const deleteClassroom = useMutation({
-    mutationFn: async (id: string) => adminDashboardService.deleteClassroom(id, await requireActor()),
+    mutationFn: async (id: string) => getAdminDashboardService().deleteClassroom(id, await requireActor()),
     onSuccess: () => invalidateAfterClassroomMutation(queryClient),
   });
 
   const setUserActive = useMutation({
     mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) =>
-      adminDashboardService.setUserActive(id, isActive, await requireActor()),
+      getAdminDashboardService().setUserActive(id, isActive, await requireActor()),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.dashboards.admin }),
   });
 
   const approveBooking = useMutation({
-    mutationFn: async (id: string) => adminDashboardService.approveBooking(id, await requireActor()),
+    mutationFn: async (id: string) => getAdminDashboardService().approveBooking(id, await requireActor()),
     retry: 0,
     onSuccess: () => invalidateAfterBookingMutation(queryClient),
   });
 
   const rejectBooking = useMutation({
     mutationFn: async ({ id, reason }: { id: string; reason: string }) =>
-      adminDashboardService.rejectBooking(id, reason, await requireActor()),
+      getAdminDashboardService().rejectBooking(id, reason, await requireActor()),
     retry: 0,
     onSuccess: () => invalidateAfterBookingMutation(queryClient),
   });
 
   const updateIssueStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: IssueStatus }) =>
-      adminDashboardService.updateIssueStatus(id, status, await requireActor()),
+      getAdminDashboardService().updateIssueStatus(id, status, await requireActor()),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.dashboards.admin }),
   });
 
   const markNotificationRead = useMutation({
-    mutationFn: (id: string) => adminDashboardService.markNotificationRead(id),
+    mutationFn: (id: string) => getAdminDashboardService().markNotificationRead(id),
     onSuccess: () => invalidateNotificationViews(queryClient),
   });
 
   const markAllNotificationsRead = useMutation({
-    mutationFn: () => adminDashboardService.markAllNotificationsRead(),
+    mutationFn: () => getAdminDashboardService().markAllNotificationsRead(),
     onSuccess: () => invalidateNotificationViews(queryClient),
   });
 
   const refreshTimetable = useMutation({
-    mutationFn: async () => adminDashboardService.listTimetable(),
+    mutationFn: async () => getAdminDashboardService().listTimetable(),
     onSuccess: () => invalidateAfterTimetableChange(queryClient),
   });
 

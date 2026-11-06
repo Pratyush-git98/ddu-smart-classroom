@@ -112,6 +112,8 @@ class HttpAcademicBookingService implements AcademicBookingService {
   }
 }
 
+const bookingService = new HttpAcademicBookingService();
+
 export function getBookingService(): AcademicBookingService {
-  return new HttpAcademicBookingService();
+  return bookingService;
 }

@@ -353,8 +353,7 @@ class MockAcademicBookingService implements AcademicBookingService {
   }
 
   async suggestAlternatives(
-    query: AlternativeSuggestionQuery,
-    _actor: BookingActor
+    query: AlternativeSuggestionQuery
   ): Promise<AlternativeClassroomSuggestion[]> {
     await mockDelay(260);
     const requested = classroomById(query.classroomId);

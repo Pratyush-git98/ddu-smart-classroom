@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   FacultyRegistrationSchema,
@@ -38,8 +38,8 @@ export function FacultyRegisterForm() {
 
   const {
     register,
+    control,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<FacultyRegistrationInput>({
     resolver: zodResolver(FacultyRegistrationSchema),
@@ -56,7 +56,7 @@ export function FacultyRegisterForm() {
     },
   });
 
-  const passwordValue = watch("password");
+  const passwordValue = useWatch({ control, name: "password" });
 
   const onSubmit = async (data: FacultyRegistrationInput) => {
     setGeneralError(null);
@@ -276,7 +276,17 @@ export function FacultyRegisterForm() {
       {/* Terms and Faculty Guidelines Checkbox */}
       <div className="space-y-1 pt-2">
         <div className="flex items-start space-x-2">
-          <Checkbox id="acceptFacultyTerms" {...register("acceptTerms")} />
+          <Controller
+            name="acceptTerms"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="acceptFacultyTerms"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
           <Label
             htmlFor="acceptFacultyTerms"
             className="text-xs font-normal text-slate-600 cursor-pointer leading-tight"

@@ -1,6 +1,16 @@
 import type { ClassroomAvailabilityQuery, ClassroomSearchFilters, NotificationQuery } from "@/types";
 import { serializeClassroomSearchFilters } from "@/features/classrooms/lib/default-filters";
 
+function serializeNotificationQuery(query: NotificationQuery): string {
+  return JSON.stringify({
+    recipientId: query.recipientId ?? null,
+    role: query.role ?? null,
+    category: query.category ?? null,
+    severity: query.severity ?? null,
+    unreadOnly: Boolean(query.unreadOnly),
+  });
+}
+
 /**
  * Canonical TanStack Query keys.
  *
@@ -32,13 +42,17 @@ export const queryKeys = {
       [...queryKeys.bookings.all, "list", scope, actorId ?? "anonymous"] as const,
     detail: (id: string, actorId?: string) =>
       [...queryKeys.bookings.all, "detail", id, actorId ?? "anonymous"] as const,
+    adminApprovals: (serializedQuery: string) =>
+      [...queryKeys.bookings.all, "admin-approvals", serializedQuery] as const,
   },
   notifications: {
     all: ["notifications"] as const,
-    list: (query: NotificationQuery) => [...queryKeys.notifications.all, "list", query] as const,
+    list: (query: NotificationQuery) =>
+      [...queryKeys.notifications.all, "list", serializeNotificationQuery(query)] as const,
     unread: (inbox: Pick<NotificationQuery, "recipientId" | "role">) =>
-      [...queryKeys.notifications.all, "unread", inbox] as const,
+      [...queryKeys.notifications.all, "unread", inbox.recipientId ?? "anonymous", inbox.role ?? "none"] as const,
     preferences: (userId?: string) => [...queryKeys.notifications.all, "preferences", userId ?? "anonymous"] as const,
+    admin: () => [...queryKeys.notifications.all, "admin"] as const,
   },
   profiles: {
     all: ["profiles"] as const,

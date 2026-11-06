@@ -7,7 +7,7 @@ import type { BookingActor } from "@/features/bookings/services/booking-service.
 import { invalidateAfterBookingMutation } from "@/lib/invalidate-queries";
 import { QUERY_CACHE } from "@/lib/query-cache-policy";
 import { queryKeys } from "@/lib/query-keys";
-import { facultyDashboardService } from "../services/faculty-dashboard-service";
+import { getFacultyDashboardService } from "../services/faculty-dashboard-client";
 import type { FacultyBookingDraft } from "../types";
 
 function useBookingActor(): BookingActor | null {
@@ -20,7 +20,7 @@ export function useFacultyOverview() {
   const actor = useBookingActor();
   return useQuery({
     queryKey: [...queryKeys.dashboards.faculty, "overview", actor?.id],
-    queryFn: () => facultyDashboardService.getOverview(actor!),
+    queryFn: () => getFacultyDashboardService().getOverview(actor!),
     enabled: Boolean(actor),
   });
 }
@@ -29,7 +29,7 @@ export function useFacultySchedule() {
   const actor = useBookingActor();
   return useQuery({
     queryKey: queryKeys.timetable.faculty(actor?.id),
-    queryFn: () => facultyDashboardService.getWeeklySchedule(),
+    queryFn: () => getFacultyDashboardService().getWeeklySchedule(),
     staleTime: QUERY_CACHE.timetable.staleTimeMs,
     gcTime: QUERY_CACHE.timetable.gcTimeMs,
     enabled: Boolean(actor),
@@ -40,7 +40,7 @@ export function useFacultyBookings(scope: "active" | "history") {
   const actor = useBookingActor();
   return useQuery({
     queryKey: queryKeys.bookings.list(scope, actor?.id),
-    queryFn: () => facultyDashboardService.getBookings(scope, actor!),
+    queryFn: () => getFacultyDashboardService().getBookings(scope, actor!),
     enabled: Boolean(actor),
     staleTime: QUERY_CACHE.bookings.staleTimeMs,
     gcTime: QUERY_CACHE.bookings.gcTimeMs,
@@ -62,7 +62,7 @@ export function useFacultyClassroomSearch(query: string) {
   const normalized = query.trim().toLowerCase();
   return useQuery({
     queryKey: queryKeys.classrooms.locator("faculty", normalized),
-    queryFn: () => facultyDashboardService.searchClassrooms(query),
+    queryFn: () => getFacultyDashboardService().searchClassrooms(query),
     staleTime: QUERY_CACHE.classroomMetadata.staleTimeMs,
     gcTime: QUERY_CACHE.classroomMetadata.gcTimeMs,
     placeholderData: keepPreviousData,
@@ -74,7 +74,7 @@ export function useFacultyProfile() {
   const actor = useBookingActor();
   return useQuery({
     queryKey: queryKeys.profiles.faculty(actor?.id),
-    queryFn: () => facultyDashboardService.getProfile(),
+    queryFn: () => getFacultyDashboardService().getProfile(),
     staleTime: QUERY_CACHE.profiles.staleTimeMs,
     gcTime: QUERY_CACHE.profiles.gcTimeMs,
     enabled: Boolean(actor),

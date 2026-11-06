@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { cloneElement, isValidElement, useId, type ReactElement, type ReactNode } from "react";
 import { RotateCcw, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -205,10 +205,17 @@ export function ClassroomSearchFiltersForm({
 }
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
+  const id = useId();
+  const control = isValidElement(children)
+    ? cloneElement(children as ReactElement<Record<string, unknown>>, { id })
+    : children;
+
   return (
     <div className="space-y-1">
-      <Label className="text-xs font-semibold text-slate-700">{label}</Label>
-      {children}
+      <Label htmlFor={id} className="text-xs font-semibold text-slate-700">
+        {label}
+      </Label>
+      {control}
     </div>
   );
 }

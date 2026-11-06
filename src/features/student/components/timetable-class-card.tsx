@@ -9,14 +9,14 @@ import { ClassStatusBadge, SessionTypeBadge } from "./class-status-badge";
 
 interface TimetableClassCardProps {
   session: StudentClassSession;
-  now?: Date;
+  now?: Date | null;
   compact?: boolean;
   className?: string;
 }
 
 export function TimetableClassCard({
   session,
-  now = new Date(),
+  now = null,
   compact = false,
   className,
 }: TimetableClassCardProps) {

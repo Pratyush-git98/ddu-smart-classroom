@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { cloneElement, isValidElement, useEffect, useId, useMemo, useState, type ReactElement, type ReactNode } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -16,12 +16,14 @@ import type { AlternativeClassroomSuggestion, FacultyBooking, FacultyBookingDraf
 import { toLocalIsoDate } from "../lib/faculty-time";
 import { useFacultyBookingCommands } from "../hooks/use-faculty-dashboard";
 import { AvailabilitySourceBadge } from "@/features/classrooms/components/availability-source-badge";
-import type { RoomAvailability } from "@/types";
+import type { Classroom, RoomAvailability } from "@/types";
 import { BookingAlternatives } from "./booking-alternatives";
 import { BookingConfirmationDialog } from "./booking-confirmation-dialog";
 
 const selectClassName =
   "h-9 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-sm text-slate-800";
+
+const EMPTY_CLASSROOMS: Classroom[] = [];
 
 function tomorrowIso(): string {
   const date = new Date();
@@ -81,12 +83,12 @@ export function FacultyBookingForm({
     },
   });
 
-  const classrooms = catalog.data ?? [];
-  const buildingValue = form.watch("building");
-  const classroomId = form.watch("classroomId");
-  const date = form.watch("date");
-  const startTime = form.watch("startTime");
-  const endTime = form.watch("endTime");
+  const classrooms = catalog.data ?? EMPTY_CLASSROOMS;
+  const buildingValue = useWatch({ control: form.control, name: "building" });
+  const classroomId = useWatch({ control: form.control, name: "classroomId" });
+  const date = useWatch({ control: form.control, name: "date" });
+  const startTime = useWatch({ control: form.control, name: "startTime" });
+  const endTime = useWatch({ control: form.control, name: "endTime" });
 
   const buildings = useMemo(
     () => Array.from(new Set(classrooms.map((room) => room.block))).sort((a, b) => a.localeCompare(b)),
@@ -379,13 +381,30 @@ function Field({
 }: {
   label: string;
   error?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
+  const id = useId();
+  const errorId = `${id}-error`;
+  const control =
+    isValidElement(children)
+      ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+          id,
+          "aria-invalid": Boolean(error),
+          "aria-describedby": error ? errorId : undefined,
+        })
+      : children;
+
   return (
     <div className="space-y-1">
-      <Label className="text-xs font-semibold text-slate-700">{label}</Label>
-      {children}
-      {error && <p className="text-[11px] text-rose-600">{error}</p>}
+      <Label htmlFor={id} className="text-xs font-semibold text-slate-700">
+        {label}
+      </Label>
+      {control}
+      {error && (
+        <p id={errorId} className="text-[11px] text-rose-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
