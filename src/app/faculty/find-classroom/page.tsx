@@ -1,7 +1,7 @@
 "use client";
 
-import { FacultyFindClassroomPage } from "@/features/faculty";
+import { FacultyClassroomFinderPage } from "@/features/faculty";
 
 export default function FacultyFindClassroomRoute() {
-  return <FacultyFindClassroomPage />;
+  return <FacultyClassroomFinderPage />;
 }

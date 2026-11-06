@@ -18,7 +18,7 @@ export interface FacultyNavItem {
 export const FACULTY_NAV: FacultyNavItem[] = [
   { label: "Overview", href: "/faculty/dashboard", icon: LayoutDashboard },
   { label: "My Schedule", href: "/faculty/schedule", icon: CalendarDays },
-  { label: "Find Classroom", href: "/faculty/find-classroom", icon: MapPinned },
+  { label: "Classroom Finder", href: "/faculty/classrooms", icon: MapPinned },
   { label: "My Bookings", href: "/faculty/bookings", icon: Bookmark },
   { label: "Booking History", href: "/faculty/bookings/history", icon: History },
   { label: "Notifications", href: "/faculty/notifications", icon: Bell },
@@ -28,6 +28,9 @@ export const FACULTY_NAV: FacultyNavItem[] = [
 export function isFacultyNavActive(pathname: string, href: string): boolean {
   if (href === "/faculty/bookings") {
     return pathname === "/faculty/bookings";
+  }
+  if (href === "/faculty/classrooms") {
+    return pathname === href || pathname.startsWith("/faculty/find-classroom");
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }

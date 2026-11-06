@@ -5,6 +5,7 @@ export * from "./components/faculty-shell";
 export * from "./components/faculty-overview";
 export * from "./components/faculty-schedule-page";
 export * from "./components/faculty-find-classroom-page";
+export * from "./components/faculty-classroom-finder-page";
 export * from "./components/faculty-bookings-page";
 export * from "./components/faculty-notifications-page";
 export * from "./components/faculty-profile-page";

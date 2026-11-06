@@ -208,7 +208,7 @@ export function BookingFormDialog({
             <Input className="h-9 font-mono text-sm" {...form.register("classroomId")} />
           </Field>
           <p className="text-[11px] text-slate-500">
-            Availability shown in Find Classroom is live occupancy telemetry, not a booking lock.
+            Timeline occupancy in Classroom Finder is provisional until the booking service confirms the slot.
           </p>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

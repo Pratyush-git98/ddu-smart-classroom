@@ -50,7 +50,7 @@ export function FacultyOverview() {
       </section>
 
       <Link
-        href="/faculty/find-classroom"
+        href="/faculty/classrooms"
         className="flex flex-col gap-3 rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-700 to-slate-900 p-5 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between"
       >
         <div>

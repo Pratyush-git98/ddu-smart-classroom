@@ -61,7 +61,7 @@ export function FacultyTopNav({
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Link href="/faculty/find-classroom">
+          <Link href="/faculty/classrooms">
             <Button
               size="sm"
               className="hidden h-8 bg-indigo-700 text-xs text-white hover:bg-indigo-800 sm:inline-flex"

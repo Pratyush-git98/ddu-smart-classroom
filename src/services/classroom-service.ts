@@ -1,8 +1,38 @@
-import type { Classroom, ClassroomFilterParams, RoomStatus } from "@/types";
+import type {
+  Classroom,
+  ClassroomFacility,
+  ClassroomFilterParams,
+  RoomEquipment,
+  RoomStatus,
+  RoomType,
+} from "@/types";
 import { mockDelay } from "./api-client";
 
-export const MOCK_CLASSROOMS: Classroom[] = [
-  // IET Block A & B
+type CatalogSeed = Omit<Classroom, "facilities"> & { facilities?: ClassroomFacility[] };
+
+function deriveFacilities(room: {
+  type: RoomType;
+  hasAirConditioning: boolean;
+  equipment: RoomEquipment[];
+  computerCount?: number;
+}): ClassroomFacility[] {
+  const facilities: ClassroomFacility[] = [];
+  if (room.equipment.some((item) => item.type === "LASER_PROJECTOR")) {
+    facilities.push("PROJECTOR");
+  }
+  if (room.equipment.some((item) => item.type === "SMART_BOARD")) {
+    facilities.push("SMART_BOARD");
+  }
+  if (room.type === "COMPUTER_LAB" || (room.computerCount ?? 0) > 0) {
+    facilities.push("COMPUTERS");
+  }
+  if (room.hasAirConditioning) {
+    facilities.push("AIR_CONDITIONING");
+  }
+  return facilities;
+}
+
+const CATALOG_SEED: CatalogSeed[] = [
   {
     id: "iet-cs-101",
     roomNumber: "CR-101",
@@ -31,6 +61,7 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: true,
     isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
   {
     id: "iet-cs-102",
@@ -43,6 +74,7 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     type: "COMPUTER_LAB",
     status: "AVAILABLE",
     currentOccupancy: 0,
+    computerCount: 50,
     equipment: [
       { id: "eq-7", type: "SMART_BOARD", name: "75\" Interactive Touchscreen", isOnline: true },
       { id: "eq-8", type: "MIC_AUDIO", name: "Ceiling Array Mic", isOnline: true },
@@ -52,6 +84,24 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: false,
     isAccessibleForDisabled: true,
+    blueprintUrl: null,
+  },
+  {
+    id: "iet-cs-204",
+    roomNumber: "CR-204",
+    name: "CSE Tutorial Studio",
+    campusId: "IET",
+    block: "Block A (CSE & IT)",
+    floor: 2,
+    capacity: 28,
+    type: "TUTORIAL_ROOM",
+    status: "AVAILABLE",
+    currentOccupancy: 0,
+    equipment: [{ id: "eq-39", type: "LASER_PROJECTOR", name: "Ceiling LCD Projector", isOnline: true }],
+    hasAirConditioning: false,
+    hasRecordingSetup: false,
+    isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
   {
     id: "iet-ec-201",
@@ -72,6 +122,49 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: true,
     isAccessibleForDisabled: false,
+    blueprintUrl: null,
+  },
+  {
+    id: "iet-me-301",
+    roomNumber: "ME-301",
+    name: "CAD / CAM Computing Lab",
+    campusId: "IET",
+    block: "Block C (ME & Civil)",
+    floor: 3,
+    capacity: 40,
+    type: "COMPUTER_LAB",
+    status: "AVAILABLE",
+    currentOccupancy: 0,
+    computerCount: 40,
+    equipment: [
+      { id: "eq-40", type: "LASER_PROJECTOR", name: "Short-throw Projector", isOnline: true },
+      { id: "eq-41", type: "IOT_HVAC", name: "Split AC Cluster", isOnline: true },
+    ],
+    hasAirConditioning: true,
+    hasRecordingSetup: false,
+    isAccessibleForDisabled: false,
+    blueprintUrl: null,
+  },
+  {
+    id: "iet-conf-110",
+    roomNumber: "IET-CF1",
+    name: "HoD Conference Room",
+    campusId: "IET",
+    block: "Central Administration Wing",
+    floor: 1,
+    capacity: 18,
+    type: "CONFERENCE_ROOM",
+    status: "AVAILABLE",
+    currentOccupancy: 0,
+    equipment: [
+      { id: "eq-42", type: "SMART_BOARD", name: "65\" Boardroom Display", isOnline: true },
+      { id: "eq-43", type: "MIC_AUDIO", name: "Table Conference Mics", isOnline: true },
+      { id: "eq-44", type: "IOT_HVAC", name: "Room AC", isOnline: true },
+    ],
+    hasAirConditioning: true,
+    hasRecordingSetup: false,
+    isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
   {
     id: "iet-sh-01",
@@ -99,8 +192,8 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: true,
     isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
-  // Deeksha Bhawan Complex
   {
     id: "db-lt-01",
     roomNumber: "DB-LT1",
@@ -128,6 +221,7 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: true,
     isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
   {
     id: "db-lt-02",
@@ -149,6 +243,7 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: true,
     isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
   {
     id: "db-lt-03",
@@ -175,6 +270,48 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: true,
     isAccessibleForDisabled: true,
+    blueprintUrl: null,
+  },
+  {
+    id: "db-sem-201",
+    roomNumber: "DB-SM2",
+    name: "Commerce Seminar Room",
+    campusId: "DEEKSHA_BHAWAN",
+    block: "First Floor East Wing",
+    floor: 1,
+    capacity: 48,
+    type: "SEMINAR_HALL",
+    status: "AVAILABLE",
+    currentOccupancy: 0,
+    equipment: [
+      { id: "eq-45", type: "LASER_PROJECTOR", name: "Wall Projector", isOnline: true },
+      { id: "eq-46", type: "MIC_AUDIO", name: "Podium Mic", isOnline: true },
+    ],
+    hasAirConditioning: false,
+    hasRecordingSetup: false,
+    isAccessibleForDisabled: true,
+    blueprintUrl: null,
+  },
+  {
+    id: "db-lab-210",
+    roomNumber: "DB-CL1",
+    name: "Business Analytics Lab",
+    campusId: "DEEKSHA_BHAWAN",
+    block: "Second Floor Central",
+    floor: 2,
+    capacity: 36,
+    type: "COMPUTER_LAB",
+    status: "AVAILABLE",
+    currentOccupancy: 0,
+    computerCount: 36,
+    equipment: [
+      { id: "eq-47", type: "SMART_BOARD", name: "Lab Display", isOnline: true },
+      { id: "eq-48", type: "IOT_HVAC", name: "Split AC", isOnline: true },
+    ],
+    hasAirConditioning: true,
+    hasRecordingSetup: false,
+    isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
   {
     id: "db-lt-05",
@@ -194,6 +331,7 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: false,
     isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
   {
     id: "db-auditorium",
@@ -216,8 +354,14 @@ export const MOCK_CLASSROOMS: Classroom[] = [
     hasAirConditioning: true,
     hasRecordingSetup: true,
     isAccessibleForDisabled: true,
+    blueprintUrl: null,
   },
 ];
+
+export const MOCK_CLASSROOMS: Classroom[] = CATALOG_SEED.map((room) => ({
+  ...room,
+  facilities: room.facilities ?? deriveFacilities(room),
+}));
 
 export async function getClassrooms(params?: ClassroomFilterParams): Promise<Classroom[]> {
   await mockDelay(60);

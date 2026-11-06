@@ -19,6 +19,34 @@ export const ClassroomFilterSchema = z.object({
   hasRecording: z.boolean().optional(),
 });
 
+export const ClassroomSearchFiltersSchema = z.object({
+  campusId: z.enum(["ALL", "IET", "DEEKSHA_BHAWAN"]).default("ALL"),
+  building: z.string().default("ALL"),
+  date: z.string().min(10),
+  startTime: z.string().min(4),
+  endTime: z.string().min(4),
+  minCapacity: z.number().int().nonnegative().optional(),
+  roomType: z
+    .enum([
+      "ALL",
+      "SMART_LECTURE_HALL",
+      "THEATRE_AUDITORIUM",
+      "COMPUTER_LAB",
+      "SEMINAR_HALL",
+      "TUTORIAL_ROOM",
+      "CONFERENCE_ROOM",
+    ])
+    .default("ALL"),
+  facilities: z
+    .array(z.enum(["PROJECTOR", "SMART_BOARD", "COMPUTERS", "AIR_CONDITIONING"]))
+    .default([]),
+  sort: z
+    .enum(["CAPACITY_ASC", "CAPACITY_DESC", "FLOOR_ASC", "FLOOR_DESC"])
+    .default("CAPACITY_DESC"),
+});
+
+export type ClassroomSearchFiltersInput = z.infer<typeof ClassroomSearchFiltersSchema>;
+
 export type ClassroomFilterInput = z.infer<typeof ClassroomFilterSchema>;
 
 export const CreateClassroomSchema = z.object({

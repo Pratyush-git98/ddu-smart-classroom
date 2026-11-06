@@ -2,4 +2,10 @@ export * from "./types";
 export * from "./components/classroom-card";
 export * from "./components/classroom-filter-bar";
 export * from "./components/classroom-grid";
-
+export * from "./components/classroom-finder";
+export * from "./components/classroom-search-filters";
+export * from "./components/classroom-result-card";
+export * from "./components/availability-timeline";
+export * from "./components/classroom-details-drawer";
+export * from "./services/classroom-service.interface";
+export * from "./services/classroom-client";
